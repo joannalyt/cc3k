@@ -3,7 +3,7 @@
 using namespace std;
 
 Character::Character(int hp, int atk, int def, int max, int x, int y, string race, char notation):
-	HP{hp}, Atk{atk}, Def{def}, maxHP{max}, pos_x{x}, pos_y{y}, race{race}, notation{notation} {}
+HP{hp}, Atk{atk}, Def{def}, maxHP{max}, pos_x{x}, pos_y{y}, race{race}, notation{notation} {}
 
 ~Character(){}
 
