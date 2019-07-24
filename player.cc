@@ -51,6 +51,10 @@ void Player::setGold(shared_ptr<Gold> g)
     {
         gold += g->getGold();
     }
+    ostringstream gold_str;
+    gold_str << g->getGold();
+
+    action = "you get: " + gold_str.str() + " ."
    /* if(g->get_Itemtype() == "normal"){
         action = "PC gets a normal gold. Value:1";
     }
@@ -142,7 +146,11 @@ void Player::move(string dir)
     }
 }     
 
-void Player::usePotion(shared_ptr<Potion> p);
+void Player::usePotion(shared_ptr<Potion> p)
+{
+    p->getPotion();
+
+}
 
 
 
