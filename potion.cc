@@ -11,5 +11,4 @@ int Potion::getPotion()
 	return potion;
 }
 
-
 Potion::~Potion() {}

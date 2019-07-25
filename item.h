@@ -6,10 +6,10 @@ class Item {
   protected:
    int x;
    int y;
-   std::string item;
+   std::string itemType;
    char notation;
   public:
-   Item(int x, int y, std::string item, char notation);
+   Item(int x, int y, std::string itemType, char notation);
    virtual ~Item() = 0;
    int get_x();
    void set_x(int x);

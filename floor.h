@@ -21,6 +21,10 @@ class Floor{
 public:
 	Floor(int level, std::string file = "default.txt");
 	void printFloor();
+	void genPotion();
+	void genChamber();
+	void genEnemy();
+	
 	void createFloor();
 };
 
