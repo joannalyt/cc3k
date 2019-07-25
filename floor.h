@@ -18,15 +18,19 @@ class Floor{
 	std::vector<std::shared_ptr<Chamber>> chambers;
 	std::vector<std::shared_ptr<Potion>> potions;
 	std::vector<std::shared_ptr<Enemy>> golds;
+	char origSymbol;
 public:
 	Floor(int level, std::string file = "default.txt");
-	void printFloor();
+	void printFloor();//add display msg
 	void genGold();
-	void genPlayer();
+	void genPlayer(std::shared_ptr<Player> pp);
 	void genStair();
 	void genPotion();
 	void genChamber();
 	void genEnemy();
+	std::vector<int> checkTile(std::string dir);//returns position after moving player to dir
+	void movePlayer(std::string dir);
+	int getLevel();
 	
 	//void createFloor();
 };
