@@ -49,9 +49,18 @@ int Chamber::checkTile(int x, int y){ //incomplete, come back after floor!
 	
 }
 
-
-
-
+vector<int> Chamber::findRandom(){
+	while(true){
+		int tempX = rand()%row;
+		int tempY = rand()%col;
+		if(display[tempX+topLeft[0]][tempY+topLeft[1]] == '.'){
+			vector<int> pos;
+			pos.emplace_back(tempX+topLeft[0]);
+			pos.emplace_back(tempY+topLeft[1]);
+			return pos;
+		}
+	}
+}
 
 
 

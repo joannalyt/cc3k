@@ -16,7 +16,9 @@ public:
 	int getRow();
 	int getCol();
 
-	int checkTile(int x, int y);
+	int checkTile(int x, int y);//incomplete
+	std::vector<int> findRandom();
 };
 
 #endif
+
