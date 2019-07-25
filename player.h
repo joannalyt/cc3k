@@ -11,7 +11,7 @@ class player : public Character
 {   
     int id; 
     int gold;
-    std::string action
+    std::string action;
     int baseAtk,baseDef;
   public:
     Player(int hp, int atk, int def,int maxHP, int x, int y, std::string race, int id);

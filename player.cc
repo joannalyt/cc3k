@@ -47,8 +47,7 @@ int Player::getGold(){
 //setGold and update Action
 void Player::setGold(shared_ptr<Gold> g)
 {
-    if(g->isPickable())
-    {
+    if(g->isPickable()){
         gold += g->getGold();
     }
     ostringstream gold_str;
