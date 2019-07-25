@@ -261,7 +261,11 @@ void Floor::movePlayer(string dir){
 		display[x2][y2]='@';
 		origSymbol=nextTile;
 	} else if(nextTile == 'G'){
-
+		for(unsigned int i = 0; i < golds.size(); i++){
+			if((golds[i]->get_x() == checkTile(dir)[0]) && (golds[i]->get_y() == checkTile(dir)[1])){
+				
+			}
+		}
 	}
 }
 

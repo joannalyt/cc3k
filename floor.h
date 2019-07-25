@@ -29,7 +29,7 @@ public:
 	void genChamber();
 	void genEnemy();
 	std::vector<int> checkTile(std::string dir);//returns position after moving player to dir
-	void movePlayer(std::string dir);
+	bool movePlayer(std::string dir);
 	int getLevel();
 	
 	//void createFloor();
