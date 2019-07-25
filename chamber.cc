@@ -1,8 +1,8 @@
 #include "chamber.h"
 #include <cstdlib> //rand
 #include <memory> //shared ptr
-
-Chamber::Chamber(int id): display{display}{
+using namespace std;
+Chamber::Chamber(int id, vector<std::vector<char>>& display): display{display}{
 	if(id == 1){ //top left
 		chamberNum = 1;
 		row = 4;
