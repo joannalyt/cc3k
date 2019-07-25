@@ -45,25 +45,25 @@ class player : public Character
 class Human : public Player
 {
     public:
-        Human(int x, int y, int id);
+        Human(int x=-1, int y=-1, int id=-1);
 };
 
 class Dwarf : public Player
 {
     public:
-        Dwarf(int x, int y, int id);
+        Dwarf(int x=-1, int y=-1, int id=-1);
 };
 
 class Elf : public Player
 {
     public:
-        Elf(int x, int y, int id);
+        Elf(int x=-1, int y=-1, int id=-1);
 };
 
 class Orc : public Player
 {
     public:
-        Orc(int x,int y, int id);
+        Orc(int x=-1,int y=-1, int id=-1);
         
 };
 #endif
