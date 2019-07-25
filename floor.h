@@ -28,7 +28,7 @@ public:
 	void genPotion();
 	void genChamber();
 	void genEnemy();
-	char checkTile(std::string dir);
+	std::vector<int> checkTile(std::string dir);//returns position after moving player to dir
 	void movePlayer(std::string dir);
 	int getLevel();
 	
