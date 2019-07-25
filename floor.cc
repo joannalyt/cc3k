@@ -41,16 +41,16 @@ void Floor:: printFloor(){
 void Floor::genGold() {
   int chamberid;
   int goldtype;
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 10; i++) { //generate 10 gold
     chamberid = rand() % 5; //
     vector<int> pos = chambers[chamberid]->findRandom();
     display[pos[0]][pos[1]] = 'G';
     goldtype = rand() % 8;
-    if (goldtype <= 4) {
+    if (goldtype <= 4) { //5/8 normal
        golds.emplace_back(make_shared<Gold> (pos[0], pos[1], "normal", 'G', 1, true));
-    } else if (goldtype <= 6) {       
+    } else if (goldtype <= 6) {//2/8 small       
        golds.emplace_back(make_shared<Gold> (pos[0], pos[1],"small", 'G', 2, true));
-    } else {
+    } else {//1/8 dragon
        golds.emplace_back(make_shared<Gold> (pos[0], pos[1], "dragon hoard", 'G', 6, false));
     }
   }
@@ -114,7 +114,103 @@ void Floor::genChamber(){
 }
 
 void Floor::genEnemy(){
-	
+	int count_dragon;
+	count_dragon = 0;
+	for(int i = 0; i < 10; i++){
+		if(golds[i]->getGold() == 6){//dragon hoard
+			golds[i]->setIspickable(0);
+			count_dragon++;
+			while(true){
+				int possibility = rand()%8;
+				if(possibility == 0){
+					if(display[golds[i]->get_x()-1][golds[i]->get_y()-1] == '.'){
+						display[golds[i]->get_x()-1][golds[i]->get_y()-1] = 'D';
+						auto d = make_shared<Dragon> (golds[i]->get_x()-1,golds[i]->get_y()-1,golds[i]);
+						enemies.emplace_back(d);
+						break;
+					}
+				} else if(possibility == 1){
+					if(display[golds[i]->get_x()-1][golds[i]->get_y()] == '.'){
+						display[golds[i]->get_x()-1][golds[i]->get_y()] = 'D';
+						auto d = make_shared<Dragon> (golds[i]->get_x()-1,golds[i]->get_y(),golds[i]);
+						enemies.emplace_back(d);
+						break;
+					}
+				} else if(possibility == 2){
+					if(display[golds[i]->get_x()-1][golds[i]->get_y()+1] == '.'){
+						display[golds[i]->get_x()-1][golds[i]->get_y()+1] = 'D';
+						auto d = make_shared<Dragon> (golds[i]->get_x()-1,golds[i]->get_y()+1,golds[i]);
+						enemies.emplace_back(d);
+						break;
+					}
+				} else if(possibility == 3){
+					if(display[golds[i]->get_x()][golds[i]->get_y()-1] == '.'){
+						display[golds[i]->get_x()][golds[i]->get_y()-1] = 'D';
+						auto d = make_shared<Dragon> (golds[i]->get_x(),golds[i]->get_y()-1,golds[i]);
+						enemies.emplace_back(d);
+						break;
+					}
+				} else if(possibility == 4){
+					if(display[golds[i]->get_x()][golds[i]->get_y()+1] == '.'){
+						display[golds[i]->get_x()][golds[i]->get_y()+1] = 'D';
+						auto d = make_shared<Dragon> (golds[i]->get_x(),golds[i]->get_y()+1,golds[i]);
+						enemies.emplace_back(d);
+						break;
+					}
+				} else if(possibility == 5){
+					if(display[golds[i]->get_x()+1][golds[i]->get_y()-1] == '.'){
+						display[golds[i]->get_x()+1][golds[i]->get_y()-1] = 'D';
+						auto d = make_shared<Dragon> (golds[i]->get_x()+1,golds[i]->get_y()-1,golds[i]);
+						enemies.emplace_back(d);
+						break;
+					}
+				} else if(possibility == 6){
+					if(display[golds[i]->get_x()+1][golds[i]->get_y()] == '.'){
+						display[golds[i]->get_x()+1][golds[i]->get_y()] = 'D';
+						auto d = make_shared<Dragon> (golds[i]->get_x()+1,golds[i]->get_y(),golds[i]);
+						enemies.emplace_back(d);
+						break;
+					}
+				} else{
+					if(display[golds[i]->get_x()+1][golds[i]->get_y()+1] == '.'){
+						display[golds[i]->get_x()+1][golds[i]->get_y()+1] = 'D';
+						auto d = make_shared<Dragon> (golds[i]->get_x()+1,golds[i]->get_y()+1,golds[i]);
+						enemies.emplace_back(d);
+						break;
+					}
+				}
+			}
+		}
+	}
+	for(int i = 0; i < 20 - count_dragon; i++){//generate other enemies
+		int chamberNum = rand()%5;
+		int enemyNum = rand()%18;
+		if(enemyNum < 4){//werewolf
+			vector<int> pos = chambers[chamberNum]->findRandom();
+			auto w = make_shared<Werewolf> (pos[0], pos[1]);
+			enemies.emplace_back(w);
+		} else if(enemyNum < 7){//vampire
+			vector<int> pos = chambers[chamberNum]->findRandom();
+			auto v = make_shared<Vampire> (pos[0], pos[1]);
+			enemies.emplace_back(v);
+		} else if(enemyNum < 12){//goblin
+			vector<int> pos = chambers[chamberNum]->findRandom();
+			auto g = make_shared<Golblin> (pos[0], pos[1]);
+			enemies.emplace_back(g);
+		} else if(enemyNum < 14){//troll
+			vector<int> pos = chambers[chamberNum]->findRandom();
+			auto t = make_shared<Troll> (pos[0], pos[1]);
+			enemies.emplace_back(t);
+		} else if(enemyNum < 16){//phoenix
+			vector<int> pos = chambers[chamberNum]->findRandom();
+			auto p = make_shared<Phoenix> (pos[0], pos[1]);
+			enemies.emplace_back(p);
+		} else{//merchant
+			vector<int> pos = chambers[chamberNum]->findRandom();
+			auto m = make_shared<Merchant> (pos[0], pos[1]);
+			enemies.emplace_back(m);
+		}
+	}
 }
 
 

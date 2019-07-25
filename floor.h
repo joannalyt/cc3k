@@ -26,7 +26,7 @@ public:
 	void genStair();
 	void genPotion();
 	void genChamber();
-	//void genEnemy();
+	void genEnemy();
 	
 	//void createFloor();
 };
