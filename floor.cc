@@ -20,12 +20,12 @@ chambers{nullptr},potions{nullptr},golds{nullptr}{
 	string s;
 	while (getline(ifs, s))	{
     vector <char> line;
-    for( int i = 0; i< s.length(); i++)
-    {
+    for( int i = 0; i< s.length(); i++){
     	line.emplace_back(s.at(i));
     }
     display.emplace_back(line);
-	} 
+	}
+	origSymbol = '.';
 }
 
 void Floor:: printFloor(){  
@@ -57,19 +57,19 @@ void Floor::genGold() {
 }
 
    
- void Floor::genPlayer(){
+ void Floor::genPlayer(shared_ptr<Player> pp){
+ 	player = pp;
  	int chamberid = rand() % 5; //
-    players->setId(id);
+    player->setId(id);
     vector<int> pos = theChamber[chamberid]->findRandom();
     display[pos[0]][pos[1]] = '@';
-    players->set_x(pos[0]);
-    players->set_y(pos[1]); 
-
+    player->set_x(pos[0]);
+    player->set_y(pos[1]);
  }
 
  void Floor::genStair(){
  	int chamberid = rand() % 5;
-    while(chamberid == players->getId())
+    while(chamberid == player->getId())
     { 
         chamberid = rand() % 5;
     }
@@ -187,30 +187,92 @@ void Floor::genEnemy(){
 		int enemyNum = rand()%18;
 		if(enemyNum < 4){//werewolf
 			vector<int> pos = chambers[chamberNum]->findRandom();
+			display[pos[0]][pos[1]] = 'W';
 			auto w = make_shared<Werewolf> (pos[0], pos[1]);
 			enemies.emplace_back(w);
 		} else if(enemyNum < 7){//vampire
 			vector<int> pos = chambers[chamberNum]->findRandom();
+			display[pos[0]][pos[1]] = 'V';
 			auto v = make_shared<Vampire> (pos[0], pos[1]);
 			enemies.emplace_back(v);
 		} else if(enemyNum < 12){//goblin
 			vector<int> pos = chambers[chamberNum]->findRandom();
+			display[pos[0]][pos[1]] = 'G';
 			auto g = make_shared<Golblin> (pos[0], pos[1]);
 			enemies.emplace_back(g);
 		} else if(enemyNum < 14){//troll
 			vector<int> pos = chambers[chamberNum]->findRandom();
+			display[pos[0]][pos[1]] = 'T';
 			auto t = make_shared<Troll> (pos[0], pos[1]);
 			enemies.emplace_back(t);
 		} else if(enemyNum < 16){//phoenix
 			vector<int> pos = chambers[chamberNum]->findRandom();
+			display[pos[0]][pos[1]] = 'P';
 			auto p = make_shared<Phoenix> (pos[0], pos[1]);
 			enemies.emplace_back(p);
 		} else{//merchant
 			vector<int> pos = chambers[chamberNum]->findRandom();
+			display[pos[0]][pos[1]] = 'M';
 			auto m = make_shared<Merchant> (pos[0], pos[1]);
 			enemies.emplace_back(m);
 		}
 	}
 }
+
+vector<int> Floor::checkTile(string dir){
+	int row = player->get_x();
+	int col = player->get_y();
+	vector<int> temp;
+	if(dir == "no"){
+		row--;
+	} else if(dir == "ne"){
+		row--;
+		col++;
+	} else if(dir == "ea"){
+		col++;
+	} else if(dir == "se"){
+		row++;
+		col++;
+	} else if(dir == "so"){
+		row++;
+	} else if(dir == "sw"){
+		row++;
+		col--;
+	} else if(dir == "we"){
+		col--;
+	} else if(dir == "nw"){
+		row--;
+		col--;
+	}
+	temp.emplace_back(row);
+	temp.emplace_back(col);
+	return temp;
+}
+
+void Floor::movePlayer(string dir){
+	int x1 = player->get_x();
+	int y1 = player->get_y();
+	char nextTile = display[checkTile(dir)[0]][checkTile(dir)[1]];
+	if(nextTile == '.' || nextTile == '+' || nextTile == '#'){
+		player->move(dir);
+		display[x1][y1]=origSymbol;
+		int x2 = player->get_x();
+		int y2 = player->get_y();
+		display[x2][y2]='@';
+		origSymbol=nextTile;
+	} else if(nextTile == 'G'){
+
+	}
+}
+
+int Floor::getLevel(){
+	return level;
+}
+
+
+
+
+
+
 
 
