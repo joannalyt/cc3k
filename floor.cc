@@ -249,7 +249,7 @@ vector<int> Floor::checkTile(string dir){
 	return temp;
 }
 
-void Floor::movePlayer(string dir){
+bool Floor::movePlayer(string dir){
 	int x1 = player->get_x();
 	int y1 = player->get_y();
 	char nextTile = display[checkTile(dir)[0]][checkTile(dir)[1]];
@@ -260,13 +260,26 @@ void Floor::movePlayer(string dir){
 		int y2 = player->get_y();
 		display[x2][y2]='@';
 		origSymbol=nextTile;
+		return true;
 	} else if(nextTile == 'G'){
 		for(unsigned int i = 0; i < golds.size(); i++){
 			if((golds[i]->get_x() == checkTile(dir)[0]) && (golds[i]->get_y() == checkTile(dir)[1])){
-				
+				if(golds[i]->isPickable()){
+					player->setGold(golds[i]);
+					golds[i].erase(golds.begin()+i);
+					nextTile = '.';
+					player->move(dir);
+					display[x1][y1]=origSymbol;
+					int x2 = player->get_x();
+					int y2 = player->get_y();
+					display[x2][y2]='@';
+					origSymbol=nextTile;
+					return true;
+				}
 			}
 		}
 	}
+	return false;
 }
 
 int Floor::getLevel(){
