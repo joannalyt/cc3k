@@ -34,7 +34,7 @@ class player : public Character
 
     void move(std::string dir);      
 
-    void usePotion(std::shared_ptr<Potion> p);
+    //void usePotion(std::shared_ptr<Potion> p);
 
 
     virtual ~Player();
