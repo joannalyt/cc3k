@@ -60,7 +60,7 @@ void Floor::genGold() {
  void Floor::genPlayer(shared_ptr<Player> pp){
  	player = pp;
  	int chamberid = rand() % 5; //
-    player->setId(id);
+    player->setId(chamberid);
     vector<int> pos = theChamber[chamberid]->findRandom();
     display[pos[0]][pos[1]] = '@';
     player->set_x(pos[0]);
@@ -273,8 +273,16 @@ int Floor::getLevel(){
 	return level;
 }
 
+void Floor::setLevel(int level){
+    this->level = level;
+}
+void Floor::sethasWon(bool won){
+	hasWon = won;
+}
 
-
+bool Floor:: hasLost(){	
+	return player->get_HP() > 0;
+}
 
 
 

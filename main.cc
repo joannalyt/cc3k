@@ -124,5 +124,8 @@ else if (command == "q") {
 	 cout << "Not Valid, try again " << endl;
         }
 }
+}
+}
+}
 
 

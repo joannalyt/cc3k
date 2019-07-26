@@ -31,7 +31,9 @@ public:
 	std::vector<int> checkTile(std::string dir);//returns position after moving player to dir
 	bool movePlayer(std::string dir);
 	int getLevel();
-	
+	void setLevel(int level);
+	void sethasWon(bool won);
+	bool hasLost();
 	//void createFloor();
 };
 
