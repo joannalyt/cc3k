@@ -35,6 +35,12 @@ void Floor:: printFloor(){
 		}
 		cout << endl;	
 	}
+	cout << "Race: " << player->get_race() << " Gold: " << player->getGold();
+    cout << "Floor " << level<<endl;
+    cout << "HP: " << player->get_HP() << endl;
+    cout << "Atk: " << player->get_Atk() << endl;
+    cout << "Def: " << player->get_Def() << endl;
+    cout << "Action: " << player->getAction() << endl; 
 }
 
 
