@@ -56,15 +56,11 @@ int main(int argc, char* argv[]) {
       }
     }
     
-    cout << "i got to here" <<endl;
+    
     newfloor->genStair();
-    cout << "i got to stairs" <<endl;
     newfloor->genPotion();
-    cout << "i got to potion" <<endl;
-    //newfloor->genGold();
-    cout << "i got to gold" <<endl;
-    //newfloor->genEnemy();
-    cout << "i got to enemy" <<endl;
+    newfloor->genGold();   
+    newfloor->genEnemy();
     newfloor->printFloor();
 
     cout << "Here are the commands you use:" << endl;
@@ -125,7 +121,7 @@ else if (c == "q") {
 } else {
   cout << "Not Valid, try again " << endl;
 }
-}
+ }
 }
 }
 }

@@ -44,6 +44,8 @@ public:
 	int getGold();
 	void setAction(std::string action);
 	bool checkDisplay (int x, int y, char c);
+	void generateandprint();
+	void reset();
 
 	//void createFloor();
 };

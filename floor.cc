@@ -15,8 +15,7 @@
 
 using namespace std;
 
-Floor::Floor(int level, string file): level{level},player{nullptr},enemies{nullptr},
-chambers{nullptr},potions{nullptr},golds{nullptr}{
+Floor::Floor(int level, string file): level{level},player{nullptr} {
 	ifstream ifs{file};
 	string s;
 	while (getline(ifs, s))	{
@@ -37,7 +36,7 @@ void Floor:: printFloor(){
 		cout << endl;	
 	}
 	cout << "Race: " << player->get_race() << " Gold: " << player->getGold();
-    cout << "Floor " << level<<endl;
+    cout << "                                         Floor:" << level<<endl;
     cout << "HP: " << player->get_HP() << endl;
     cout << "Atk: " << player->get_Atk() << endl;
     cout << "Def: " << player->get_Def() << endl;
@@ -51,9 +50,7 @@ void Floor::genGold() {
   for (int i = 0; i < 10; i++) { //generate 10 gold
 
     chamberid = rand() % 5; //
-    cout << chamberid << endl;
     vector<int> pos = chambers[chamberid]->findRandom();
-    cout << pos[0] << endl;
     display[pos[0]][pos[1]] = 'G';
     goldtype = rand() % 8;
     if (goldtype <= 4) { //5/8 normal
@@ -85,7 +82,7 @@ void Floor::genGold() {
 
  void Floor::genStair(){
  	int chamberid = rand() % 5;
-    while(chamberid == player->getId())
+     while(chamberid == player->getId())
     { 
         chamberid = rand() % 5;
     }
@@ -98,7 +95,8 @@ void Floor::genGold() {
  	int chamberid;
 	for (int i = 0; i < 10; i++) {
     chamberid = rand() % 5; //generate a random num from 0-4
-    vector<int> pos = chambers[chamberid]->findRandom();
+
+     vector<int> pos = chambers[chamberid]->findRandom();
     display[pos[0]][pos[1]] = 'P';
     int type = rand() % 6; //generate a random num from 0-5
     if (type == 0) {
@@ -133,6 +131,7 @@ void Floor::genChamber(){
 		auto c = make_shared<Chamber> (id, display);
 		chambers.emplace_back(c);
 	}
+
 }
 
 void Floor::genEnemy(){
@@ -204,6 +203,7 @@ void Floor::genEnemy(){
 			}
 		}
 	}
+	cout << count_dragon<<endl;
 	for(int i = 0; i < 20 - count_dragon; i++){//generate other enemies
 		int chamberNum = rand()%5;
 		int enemyNum = rand()%18;
@@ -219,7 +219,7 @@ void Floor::genEnemy(){
 			enemies.emplace_back(v);
 		} else if(enemyNum < 12){//goblin
 			vector<int> pos = chambers[chamberNum]->findRandom();
-			display[pos[0]][pos[1]] = 'G';
+			display[pos[0]][pos[1]] = 'N';
 			auto g = make_shared<Goblin> (pos[0], pos[1]);
 			enemies.emplace_back(g);
 		} else if(enemyNum < 14){//troll
@@ -229,7 +229,7 @@ void Floor::genEnemy(){
 			enemies.emplace_back(t);
 		} else if(enemyNum < 16){//phoenix
 			vector<int> pos = chambers[chamberNum]->findRandom();
-			display[pos[0]][pos[1]] = 'P';
+			display[pos[0]][pos[1]] = 'X';
 			auto p = make_shared<Phoenix> (pos[0], pos[1]);
 			enemies.emplace_back(p);
 		} else{//merchant
@@ -333,4 +333,44 @@ bool Floor::checkDisplay (int x, int y,char c)
 }
 
 
+void Floor:: generateandprint() {
+	genStair();
+    genPotion();
+    genGold();
+    genEnemy();
+    printFloor();
 
+}
+
+/*void Floor::reset() {
+	player->clear();
+ for(int i = 0; i < 5; i++)
+ 	chambers->clear();
+
+
+    while((int)theEnemy.size() > 0){
+	    theDisplay[theEnemy[0]->getRow()][theEnemy[0]->getCol()] = '.';
+	    theEnemy.erase(theEnemy.begin());
+    }
+    while((int)theChamber.size() > 0){
+	    theChamber.erase(theChamber.begin());
+    }
+    while((int)thePotion.size() > 0){
+	    theDisplay[thePotion[0]->getRow()][thePotion[0]->getCol()] = '.';
+	    thePotion.erase(thePotion.begin());
+    }
+    while((int)theGold.size() > 0){
+	    theDisplay[theGold[0]->getRow()][theGold[0]->getCol()] = '.';
+	    theGold.erase(theGold.begin());
+    }
+    for(int i = 0; i < numRow; i++){ // clear stair
+	    for(int j = 0; j < numCol ; ++j){
+		    if(theDisplay[i][j] == '\\') {
+			    theDisplay[i][j] = '.';
+		    }
+	    }
+    }
+    theDisplay[thePlayer->getRow()][thePlayer->getCol()] = '.';
+    thePlayer->setAtk(thePlayer->getdeAtk());
+    thePlayer->setDef(thePlayer->getdeDef());
+}*/
