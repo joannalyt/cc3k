@@ -6,11 +6,12 @@
 #include "item.h"
 #include "gold.h"
 #include "potion.h"
-#include <iotream>//? 
+#include <iostream>//? 
 #include <fstream>
 #include <string>
 #include <utility>
 #include <cstdlib>
+#include <vector>
 
 using namespace std;
 
@@ -20,7 +21,7 @@ chambers{nullptr},potions{nullptr},golds{nullptr}{
 	string s;
 	while (getline(ifs, s))	{
     vector <char> line;
-    for( int i = 0; i< s.length(); i++){
+    for( unsigned int i = 0; i< s.length(); i++){
     	line.emplace_back(s.at(i));
     }
     display.emplace_back(line);
@@ -29,8 +30,8 @@ chambers{nullptr},potions{nullptr},golds{nullptr}{
 }
 
 void Floor:: printFloor(){  
-	for(int i= 0; i < display.size(); i++){
-		for ( int j = 0; j < display[i].size(); j++){
+	for(unsigned int i= 0; i < display.size(); i++){
+		for ( unsigned int j = 0; j < display[i].size(); j++){
 			cout << display[i][j];
 		}
 		cout << endl;	
@@ -113,7 +114,7 @@ void Floor::genGold() {
  }  
 
 void Floor::genChamber(){
-	for(int id = 1; id < 6; id++){
+	for(int id = 0; id < 5; id++){
 		auto c = make_shared<Chamber> (id, display);
 		chambers.emplace_back(c);
 	}
@@ -303,7 +304,18 @@ bool Floor:: hasLost(){
 	return player->get_HP() > 0;
 }
 
-
+int Floor:: getGold()
+{
+	player->getGold();
+}
+void Floor::setAction(std::string action)
+{
+	player->setAction(action);
+}
+bool Floor::checkDisplay (int x, int y,char c)
+{
+	return display[x][y] == c;
+}
 
 
 

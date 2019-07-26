@@ -1,4 +1,4 @@
-#ifndef
+#ifndef PLAYER_H
 #define PLAYER_H
 #include "character.h" 
 #include "gold.h"
@@ -7,7 +7,8 @@
 #include <memory>
 #include <string>
 
-class player : public Character
+class Enemy;
+class Player: public Character
 {   
     int id; 
     int gold;
@@ -39,7 +40,7 @@ class player : public Character
 
     virtual ~Player();
 
-}
+};
 
 
 class Human : public Player

@@ -1,5 +1,5 @@
-#ifndef CHARACTER_H
-#define CHARACTER_H
+#ifndef FLOOR_H
+#define FLOOR_H
 #include <string>
 #include <vector>
 #include <memory>
@@ -34,6 +34,10 @@ public:
 	void setLevel(int level);
 	void sethasWon(bool won);
 	bool hasLost();
+	int getGold();
+	void setAction(std::string action);
+	bool checkDisplay (int x, int y, char c);
+
 	//void createFloor();
 };
 

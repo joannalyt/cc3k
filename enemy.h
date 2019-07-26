@@ -1,8 +1,12 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 #include "character.h"
+#include "gold.h"
 #include <string>
 #include <memory>
+
+
+class Player;
 
 class Enemy: public Character{
 	int gold;
@@ -18,7 +22,7 @@ public:
 	bool getCompass();
 	void setCompass(bool compass);
 
-	void attack(shared_ptr<Player> pc);
+	void attack(std::shared_ptr<Player> pc);
 };
 
 class Vampire: public Enemy{

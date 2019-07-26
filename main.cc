@@ -6,11 +6,7 @@
 #include <string>
 #include <cstring>
 #include <cstdlib>
-#include "item.h"
-#include "gold.h"
-#include "potion.h"
 #include "player.h"
-#include "enemy.h"
 #include "character.h"
 #include "floor.h"
 #include "chamber.h"
@@ -20,7 +16,7 @@ using namespace std;
 int main(int argc, char* argv[]) {
 	if(argc <= 1)
 	{
-	while(1) {
+   while(1) {
    	cout << "Welcome to CCK3+!" << endl;
     //prompt to generate player
     cout << "Please choose a character." << endl;
@@ -28,36 +24,35 @@ int main(int argc, char* argv[]) {
     cout << "d: dwarf." << endl;
     cout << "e: elf." << endl;
     cout << "o: orc." << endl;
-	
-  
- 	auto newfloor = make_shared<Floor>();
- 	char race;
- 	cin >> race;
-	while(1) {
-    if (race == 'h') {
-      auto player = make_shared<Human> ();
-      newfloor->genPlayer(player);
-      break;
-    } else if (race == 'd') {
-      auto player = make_shared<Dwarf> ();
-      newfloor->genPlayer(player);
-      break;
-    } else if (race == 'e') {
-      auto player = make_shared<Elf> (); 
-      newfloor->genPlayer(player);
-      break;
-    } else if (race == 'o') {
-      auto player = make_shared<Orc> ();
-      newfloor->genPlayer(player);
-      break;
+
+
+    auto newfloor = make_shared<Floor>(1);
+    char race;
+    cin >> race;
+    while(1) {
+      if (race == 'h') {
+        auto player = make_shared<Human> ();
+        newfloor->genPlayer(player);
+        break;
+      } else if (race == 'd') {
+        auto player = make_shared<Dwarf> ();
+        newfloor->genPlayer(player);
+        break;
+      } else if (race == 'e') {
+        auto player = make_shared<Elf> (); 
+        newfloor->genPlayer(player);
+        break;
+      } else if (race == 'o') {
+        auto player = make_shared<Orc> ();
+        newfloor->genPlayer(player);
+        break;
+      }
+      else {
+        cout << "Please enter a valid command for players" << endl;
+        cin >> race;
+      }
     }
-    else {
-      cout << "Please enter a valid command for players" << endl;
-      cin >> race;
-    }
-  }
     newfloor->genChamber();
-    newfloor->genPlayer(); 
     newfloor->genStair();
     newfloor->genPotion();
     newfloor->genGold();
@@ -72,57 +67,56 @@ int main(int argc, char* argv[]) {
     cout << "QUIT: q" << endl;
     string c; 
     while (cin >> c) {
-    if (c == "no" ||c ==  "so" ||c==  "ea"
-   ||c ==  "we" ||c ==  "ne" ||c ==  "se" ||c ==  "sw" ||c ==  "nw") {
-    if (newfloor->display[newfloor->checkTile(c)[0]][newfloor->checkTile(c)[1]]  == '\\') {
-    if(newfloor->getLevel() == 5) {
-      newfloor->sethasWon(true);
-      cout << "You've won!! Your final score is: ";
+      if (c == "no" ||c ==  "so" ||c==  "ea"
+       ||c ==  "we" ||c ==  "ne" ||c ==  "se" ||c ==  "sw" ||c ==  "nw") {
+        if (newfloor->checkDisplay(newfloor->checkTile(c)[0],newfloor->checkTile(c)[1] ,'\\')) {
+          if(newfloor->getLevel() == 5) {
+            newfloor->sethasWon(true);
+            cout << "You've won!! Your final score is: ";
       		if(race == 'h') { // add getGold function
-	   		  cout << (newfloor->getGold() * 1.5) << endl;
-		    }
-		    else if(race == 'd') {
-		      cout << newfloor->getGold() * 2 << endl;
-		    }
-		    else if(race == 'o') {
-		      cout << newfloor->getGold()/2 << endl;
-		    }
-		    else if(race == 'e') {
-              cout <<newfloor->getGold() << endl;
-		    }
-		   break;    
-	}
-    else {
-    newfloor->setLevel(newfloor->getLevel() + 1);
-	player->setAction("Welcome to a new floor!"); // add getplayer function 
-	newfloor->clear(); // add this function 
-	newfloor->genChamber();
-    newfloor->genPlayer(); 
-    newfloor->genStair();
-    newfloor->genPotion();
-    newfloor->genGold();
-    newfloor->genEnemy();
-    newfloor->printFloor();
-    }
+            cout << (newfloor->getGold() * 1.5) << endl;
+          }
+          else if(race == 'd') {
+            cout << newfloor->getGold() * 2 << endl;
+          }
+          else if(race == 'o') {
+            cout << newfloor->getGold()/2 << endl;
+          }
+          else if(race == 'e') {
+            cout <<newfloor->getGold() << endl;
+          }
+          break;    
+        }
+        else {
+          newfloor->setLevel(newfloor->getLevel() + 1);
+	 newfloor->setAction("Welcome to a new floor!"); // add getplayer function 
+	 /*newfloor->clear(); // add this function 
+	 newfloor->genChamber();
+   newfloor->genStair();
+   newfloor->genPotion();
+   newfloor->genGold();
+   newfloor->genEnemy();
+   newfloor->printFloor();*/
  }
- if (newfloor->movePlayer(c)) {
- 	if(newfloor->hasLost())
- 		break;
- 	 newfloor->printFloor();
- } else {
- 	cout << "invalid command" <<endl;
- }
+}
+if (newfloor->movePlayer(c)) {
+  if(newfloor->hasLost())
+   break;
+ newfloor->printFloor();
+} else {
+  cout << "invalid command" <<endl;
+}
 }
 
-else if (command == "r") {
- 	newfloor->clear(); //add
-    break;
+else if (c == "r") {
+ 	//newfloor->clear(); //add
+  break;
 }
-else if (command == "q") {
+else if (c == "q") {
 	break;
 } else {
-	 cout << "Not Valid, try again " << endl;
-        }
+  cout << "Not Valid, try again " << endl;
+}
 }
 }
 }
