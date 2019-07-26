@@ -49,29 +49,38 @@ void Floor::genGold() {
   int chamberid;
   int goldtype;
   for (int i = 0; i < 10; i++) { //generate 10 gold
+
     chamberid = rand() % 5; //
+    cout << chamberid << endl;
     vector<int> pos = chambers[chamberid]->findRandom();
+    cout << pos[0] << endl;
     display[pos[0]][pos[1]] = 'G';
     goldtype = rand() % 8;
     if (goldtype <= 4) { //5/8 normal
-       golds.emplace_back(make_shared<Gold> (pos[0], pos[1], "normal", 'G', 1, true));
-    } else if (goldtype <= 6) {//2/8 small       
-       golds.emplace_back(make_shared<Gold> (pos[0], pos[1],"small", 'G', 2, true));
+       auto g = make_shared<Gold> (pos[0], pos[1], "normal", 'G', 1, true);
+       golds.emplace_back(g);
+    } else if (goldtype <= 6) {//2/8 small  
+       auto g = make_shared<Gold> (pos[0], pos[1],"small", 'G', 2, true);     
+       golds.emplace_back(g);
     } else {//1/8 dragon
-       golds.emplace_back(make_shared<Gold> (pos[0], pos[1], "dragon hoard", 'G', 6, false));
+       auto g = make_shared<Gold> (pos[0], pos[1], "dragon hoard", 'G', 6, false);
+       golds.emplace_back(g);
     }
   }
 }
 
    
  void Floor::genPlayer(shared_ptr<Player> pp){
+
  	player = pp;
+
  	int chamberid = rand() % 5; //
     player->setId(chamberid);
     vector<int> pos = chambers[chamberid]->findRandom();
     display[pos[0]][pos[1]] = '@';
     player->set_x(pos[0]);
     player->set_y(pos[1]);
+   
  }
 
  void Floor::genStair(){
@@ -93,22 +102,28 @@ void Floor::genGold() {
     display[pos[0]][pos[1]] = 'P';
     int type = rand() % 6; //generate a random num from 0-5
     if (type == 0) {
-    potions.emplace_back(make_shared<Potion> (pos[0], pos[1],"RH", 'P', 10));
+    auto newpotion = make_shared<Potion> (pos[0], pos[1],"RH", 'P', 10);
+    potions.emplace_back(newpotion);
     } 
     else if (type == 1) {
-    potions.emplace_back(make_shared<Potion> (pos[0], pos[1],"BD", 'P', 5));
+    auto newpotion = make_shared<Potion> (pos[0], pos[1],"BD", 'P', 5);
+    potions.emplace_back(newpotion);
     } 
     else if (type == 2){
-    potions.emplace_back(make_shared<Potion> (pos[0], pos[1],"BA", 'P', 5));    
+    auto newpotion = make_shared<Potion> (pos[0], pos[1],"BA", 'P', 5);
+    potions.emplace_back(newpotion);    
     } 
     else if (type == 3) {
-    potions.emplace_back(make_shared<Potion> (pos[0], pos[1],"WA", 'P', -5));
+    auto newpotion = make_shared<Potion> (pos[0], pos[1],"WA", 'P', -5);
+    potions.emplace_back(newpotion);
     } 
     else if (type == 4) {
-    potions.emplace_back(make_shared<Potion> (pos[0], pos[1],"PH", 'P', -10));    
+    auto newpotion = make_shared<Potion> (pos[0], pos[1],"PH", 'P', -10);	
+    potions.emplace_back(newpotion);    
     } 
     else {
-    potions.emplace_back(make_shared<Potion> (pos[0], pos[1],"WD", 'P', -5));
+    auto newpotion = make_shared<Potion> (pos[0], pos[1],"WD", 'P', -5);
+    potions.emplace_back(newpotion);
     }
   }
  }  

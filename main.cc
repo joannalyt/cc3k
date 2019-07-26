@@ -25,16 +25,17 @@ int main(int argc, char* argv[]) {
     cout << "e: elf." << endl;
     cout << "o: orc." << endl;
 
-
     auto newfloor = make_shared<Floor>(1);
-    newfloor->printFloor();
+    newfloor->genChamber();
+    //newfloor->printFloor();
     char race;
     cin >> race;
     while(1) {
       if (race == 'h') {
         auto player = make_shared<Human> ();
+        
         newfloor->genPlayer(player);
-        cout << "i got to human" <<endl;
+        
         break;
       } else if (race == 'd') {
         auto player = make_shared<Dwarf> ();
@@ -54,12 +55,16 @@ int main(int argc, char* argv[]) {
         cin >> race;
       }
     }
-    newfloor->genChamber();
-    cout << "i got to Chamber" <<endl;
+    
+    cout << "i got to here" <<endl;
     newfloor->genStair();
+    cout << "i got to stairs" <<endl;
     newfloor->genPotion();
-    newfloor->genGold();
-    newfloor->genEnemy();
+    cout << "i got to potion" <<endl;
+    //newfloor->genGold();
+    cout << "i got to gold" <<endl;
+    //newfloor->genEnemy();
+    cout << "i got to enemy" <<endl;
     newfloor->printFloor();
 
     cout << "Here are the commands you use:" << endl;
