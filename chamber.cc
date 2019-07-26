@@ -46,7 +46,7 @@ int Chamber::getCol(){
 }
 
 int Chamber::checkTile(int x, int y){ //incomplete, come back after floor!
-	
+	return 0;
 }
 
 vector<int> Chamber::findRandom(){

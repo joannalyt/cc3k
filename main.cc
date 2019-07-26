@@ -27,12 +27,14 @@ int main(int argc, char* argv[]) {
 
 
     auto newfloor = make_shared<Floor>(1);
+    newfloor->printFloor();
     char race;
     cin >> race;
     while(1) {
       if (race == 'h') {
         auto player = make_shared<Human> ();
         newfloor->genPlayer(player);
+        cout << "i got to human" <<endl;
         break;
       } else if (race == 'd') {
         auto player = make_shared<Dwarf> ();
@@ -53,6 +55,7 @@ int main(int argc, char* argv[]) {
       }
     }
     newfloor->genChamber();
+    cout << "i got to Chamber" <<endl;
     newfloor->genStair();
     newfloor->genPotion();
     newfloor->genGold();

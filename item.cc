@@ -3,8 +3,8 @@
 #include "item.h"
 using namespace std;
 
-Item::Item(int x, int y, std::string item, char notation):
-  x{x}, y{y}, item{item}, notation{notation} {}
+Item::Item(int x, int y, std::string itemType, char notation):
+  x{x}, y{y}, itemType{itemType}, notation{notation} {}
 Item::~Item() {}
 int Item::get_x()
 {
@@ -24,7 +24,7 @@ void Item::set_y(int y)
 }
 std::string Item::get_Itemtype()
 {
-	return item;
+	return itemType;
 }
 char Item::get_Notation()
 {

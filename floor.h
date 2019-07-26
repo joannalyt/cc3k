@@ -3,12 +3,18 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include "player.h"
+#include "enemy.h"
+#include "chamber.h"
+#include "gold.h"
+#include "potion.h"
 
-class Player;
+/*class Player;
 class Enemy;
-class Chamber;
+
 class Potion;
-class Gold;
+class Gold;*/
+//class Chamber;
 
 class Floor{
 	int level;
@@ -17,8 +23,9 @@ class Floor{
 	std::vector<std::shared_ptr<Enemy>> enemies;
 	std::vector<std::shared_ptr<Chamber>> chambers;
 	std::vector<std::shared_ptr<Potion>> potions;
-	std::vector<std::shared_ptr<Enemy>> golds;
+	std::vector<std::shared_ptr<Gold>> golds;
 	char origSymbol;
+	bool hasWon;
 public:
 	Floor(int level, std::string file = "default.txt");
 	void printFloor();//add display msg

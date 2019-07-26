@@ -68,7 +68,7 @@ void Floor::genGold() {
  	player = pp;
  	int chamberid = rand() % 5; //
     player->setId(chamberid);
-    vector<int> pos = theChamber[chamberid]->findRandom();
+    vector<int> pos = chambers[chamberid]->findRandom();
     display[pos[0]][pos[1]] = '@';
     player->set_x(pos[0]);
     player->set_y(pos[1]);
@@ -80,7 +80,7 @@ void Floor::genGold() {
     { 
         chamberid = rand() % 5;
     }
-    theChamber[id]->findRandom();
+    vector<int> pos = chambers[chamberid]->findRandom();
     display[pos[0]][pos[1]] = '\\';
     
  }
@@ -88,7 +88,7 @@ void Floor::genGold() {
  void Floor::genPotion(){
  	int chamberid;
 	for (int i = 0; i < 10; i++) {
-    id = rand() % 5; //generate a random num from 0-4
+    chamberid = rand() % 5; //generate a random num from 0-4
     vector<int> pos = chambers[chamberid]->findRandom();
     display[pos[0]][pos[1]] = 'P';
     int type = rand() % 6; //generate a random num from 0-5
@@ -205,7 +205,7 @@ void Floor::genEnemy(){
 		} else if(enemyNum < 12){//goblin
 			vector<int> pos = chambers[chamberNum]->findRandom();
 			display[pos[0]][pos[1]] = 'G';
-			auto g = make_shared<Golblin> (pos[0], pos[1]);
+			auto g = make_shared<Goblin> (pos[0], pos[1]);
 			enemies.emplace_back(g);
 		} else if(enemyNum < 14){//troll
 			vector<int> pos = chambers[chamberNum]->findRandom();
@@ -273,7 +273,7 @@ bool Floor::movePlayer(string dir){
 			if((golds[i]->get_x() == checkTile(dir)[0]) && (golds[i]->get_y() == checkTile(dir)[1])){
 				if(golds[i]->isPickable()){
 					player->setGold(golds[i]);
-					golds[i].erase(golds.begin()+i);
+					golds.erase(golds.begin()+i);
 					nextTile = '.';
 					player->move(dir);
 					display[x1][y1]=origSymbol;
@@ -306,7 +306,7 @@ bool Floor:: hasLost(){
 
 int Floor:: getGold()
 {
-	player->getGold();
+	return player->getGold();
 }
 void Floor::setAction(std::string action)
 {

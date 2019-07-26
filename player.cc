@@ -53,7 +53,7 @@ void Player::setGold(shared_ptr<Gold> g)
     ostringstream gold_str;
     gold_str << g->getGold();
 
-    action = "you get: " + gold_str.str() + " ."
+    action = "you get: " + gold_str.str() + " .";
    /* if(g->get_Itemtype() == "normal"){
         action = "PC gets a normal gold. Value:1";
     }
@@ -100,56 +100,57 @@ void Player::damage(shared_ptr<Enemy> e)
      } figure out wt this means*/
     }
      if (e->get_race() == "Merchant") {
-      e->sethostile(true);
+      e->setHostile(true);
     }
 }
 
 //changes the direction of the PC 
 void Player::move(string dir)
 {
-    if(direction == "no"){
+    if(dir == "no"){
         set_y(get_x()-1);
         action = "PC moves North.";
     }
-    else if(direction == "so"){
+    else if(dir == "so"){
         set_y(get_x()+1);
         action = "PC moves South.";
     }
-    else if(direction == "we"){
+    else if(dir == "we"){
         set_x(get_y()-1);
         action = "PC moves West.";
     }
-    else if(direction == "ea"){
+    else if(dir == "ea"){
         set_x(get_y()+1);
         action = "PC moves East.";
     }    
-    else if(direction == "ne"){
+    else if(dir == "ne"){
         set_x(get_x()-1);
         set_y(get_y()+1);
         action = "PC moves NorthEast.";
     }
-    else if(direction == "se"){
+    else if(dir == "se"){
         set_x(get_x()+1);
         set_y(get_y()+1);
         action = "PC moves SouthEast.";
     }
-    else if(direction == "sw"){
+    else if(dir == "sw"){
         set_x(get_x()+1);
         set_y(get_y()-1);
         action = "PC moves SouthWest.";
     }
-    else if(direction == "nw"){
+    else if(dir == "nw"){
         set_x(get_x()-1);
         set_y(get_y()-1);
         action = "PC moves NorthWest.";    
     }
 }     
 
-void Player::usePotion(shared_ptr<Potion> p)
+/*void Player::usePotion(shared_ptr<Potion> p)
 {
     p->getPotion();
 
-}
+}*/
+Player :: ~Player(){}
 
 
 

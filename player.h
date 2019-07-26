@@ -10,10 +10,10 @@
 class Enemy;
 class Player: public Character
 {   
-    int id; 
     int gold;
-    std::string action;
+    int id; 
     int baseAtk,baseDef;
+    std::string action;
   public:
     Player(int hp, int atk, int def,int maxHP, int x, int y, std::string race, int id);
 
