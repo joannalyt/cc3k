@@ -108,19 +108,19 @@ void Player::damage(shared_ptr<Enemy> e)
 void Player::move(string dir)
 {
     if(dir == "no"){
-        set_y(get_x()-1);
+        set_x(get_x()-1);
         action = "PC moves North.";
     }
     else if(dir == "so"){
-        set_y(get_x()+1);
+        set_x(get_x()+1);
         action = "PC moves South.";
     }
     else if(dir == "we"){
-        set_x(get_y()-1);
+        set_y(get_y()-1);
         action = "PC moves West.";
     }
     else if(dir == "ea"){
-        set_x(get_y()+1);
+        set_y(get_y()+1);
         action = "PC moves East.";
     }    
     else if(dir == "ne"){

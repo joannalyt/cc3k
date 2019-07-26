@@ -316,7 +316,7 @@ void Floor::sethasWon(bool won){
 }
 
 bool Floor:: hasLost(){	
-	return player->get_HP() > 0;
+	return player->get_HP() <= 0;
 }
 
 int Floor:: getGold()

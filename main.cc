@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
     while (cin >> c) {
       if (c == "no" ||c ==  "so" ||c==  "ea"
        ||c ==  "we" ||c ==  "ne" ||c ==  "se" ||c ==  "sw" ||c ==  "nw") {
-        if (newfloor->checkDisplay(newfloor->checkTile(c)[0],newfloor->checkTile(c)[1] ,'\\')) {
+          if (newfloor->checkDisplay(newfloor->checkTile(c)[0],newfloor->checkTile(c)[1] ,'\\')) {
           if(newfloor->getLevel() == 5) {
             newfloor->sethasWon(true);
             cout << "You've won!! Your final score is: ";
@@ -108,7 +108,7 @@ int main(int argc, char* argv[]) {
  }
 }
 if (newfloor->movePlayer(c)) {
-  if(newfloor->hasLost())
+    if(newfloor->hasLost())
    break;
  newfloor->printFloor();
 } else {
