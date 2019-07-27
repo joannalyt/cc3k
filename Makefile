@@ -1,4 +1,4 @@
-CXX = g++
+CXX = g++-5
 CXXFLAGS = -g -std=c++14 -Wall -MMD -Werror=vla
 #CXXFLAGS = -std=c++14 -Wall -MMD -Werror=vla
 EXEC = cc3k

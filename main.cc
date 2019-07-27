@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
                         }
                     }
                     if (newfloor->movePlayer(c)) {
-                        cout << "moved player" << endl;
+                        //cout << "moved player" << endl;
                         newfloor->moveEnemy();
                         if (newfloor->hasLost())
                             break;
@@ -124,7 +124,7 @@ int main(int argc, char* argv[]) {
                         check(newfloor,c, 'M') || check(newfloor,c, 'D') || check(newfloor,c, 'X') ||
                         check(newfloor,c, 'T') || check(newfloor,c, 'E')) {  // checks if there's enemy on the direction command
                         newfloor->pAttack(c);  // attack is in player class
-                        //newfloor->enemyMoveAndAttack();
+                        newfloor->moveEnemy();
                         if(newfloor->hasLost()) break;// PC dies
                         newfloor->printFloor();
                     } else {

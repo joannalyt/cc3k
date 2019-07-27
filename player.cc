@@ -77,7 +77,7 @@ void Player::setAction(const string s)
 //ceiling((100/(100+Def (Defender)))∗Atk(Attacker)),
 void Player::damage(shared_ptr<Enemy> e)
 {
-    int combat = (int) ceil ((100 / (100+get_Def()))*e->get_Atk());
+    int combat = (int) ceil ((100.0 / (100+get_Def()))*e->get_Atk());
 
     ostringstream combat_str;
     combat_str << combat;
@@ -88,7 +88,7 @@ void Player::damage(shared_ptr<Enemy> e)
     {
     e->set_HP(newdamage);
     hp_str << newdamage; 
-    action = "PC attacked" + e->get_race() + ". Dealed "+ combat_str.str() + "damage. [ hp:" + hp_str.str() + " ]";
+    action = "PC attacked " + e->get_race() + ". Dealed "+ combat_str.str() + " damage. [ hp:" + hp_str.str() + " ]";
     } else { // the enemy is killled
        e->set_HP(0);
        action = e->get_race()+ " is killed";
