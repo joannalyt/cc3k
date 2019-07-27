@@ -383,14 +383,15 @@ void Floor::moveToNeighbour(shared_ptr<Enemy> pe){
 }
 
 void Floor::moveEnemy(){
-	int x1 = player->get_x();
-	int y1 = player->get_y();
-	cout << x1<<endl;
-	cout << y1<<endl;
 	for(unsigned int i = 0; i < enemies.size(); i++){
 		if(!withinBlock(enemies[i]->get_x(), enemies[i]->get_y())){
-			moveToNeighbour(enemies[i]);
-		} else{
+			if(enemies[i]->get_notation() != 'D'){
+				moveToNeighbour(enemies[i]);
+			}
+		} else{ //attack if hostile
+			if(enemies[i]->getHostile()){
+				enemies[i]->attack(player);
+			}
 
 		}
 	}
