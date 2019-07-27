@@ -39,12 +39,15 @@ void Enemy::attack(shared_ptr<Player> pc){ //this enemy attacks player pc
 		int random = rand()%2;
 		if(random){
 			int damage = ceil((100/(100+pc->get_Def()))*get_Atk());
+			cout << "damage = " << damage << endl;
+			cout << "pc's def = " << pc->get_Def() << endl;
+			cout << "enemy's atk = " << get_Atk() << endl;
 			int curHP = pc->get_HP();
 			if(curHP - damage > 0){
 				pc->set_HP(curHP-damage);
 				ostringstream combat_str;
     			combat_str << damage;
-				pc->setAction(pc->getAction()+get_notation()+" deals "+combat_str.str()+"damage to PC.");
+				pc->setAction(pc->getAction()+get_notation()+" deals "+combat_str.str()+" damage to PC. ");
 			} else{//player dies
 				pc->set_HP(0);
 			}
