@@ -46,6 +46,11 @@ public:
 	bool checkDisplay (int x, int y, char c);
 	void generateandprint();
 	void reset();
+	void newLevel();
+	int enemyIndex();
+	void pAttack(std::string dir);
+	int enemyIndex(int x, int y );
+	~Floor();
 
 	//void createFloor();
 };

@@ -15,6 +15,7 @@
 
 using namespace std;
 
+Floor ::~Floor(){reset();}
 Floor::Floor(int level, string file): level{level},player{nullptr} {
 	ifstream ifs{file};
 	string s;
@@ -203,7 +204,6 @@ void Floor::genEnemy(){
 			}
 		}
 	}
-	cout << count_dragon<<endl;
 	for(int i = 0; i < 20 - count_dragon; i++){//generate other enemies
 		int chamberNum = rand()%5;
 		int enemyNum = rand()%18;
@@ -339,38 +339,42 @@ void Floor:: generateandprint() {
     genGold();
     genEnemy();
     printFloor();
-
 }
 
-/*void Floor::reset() {
-	player->clear();
- for(int i = 0; i < 5; i++)
- 	chambers->clear();
+void Floor::reset() {
+   //player.clear();
+ for (unsigned int i = 0; i < display.size(); i++) {
+  	display[i].clear();
+ }   
+   golds.clear();
+   potions.clear();
+   enemies.clear();
+   chambers.clear();
+}
 
 
-    while((int)theEnemy.size() > 0){
-	    theDisplay[theEnemy[0]->getRow()][theEnemy[0]->getCol()] = '.';
-	    theEnemy.erase(theEnemy.begin());
-    }
-    while((int)theChamber.size() > 0){
-	    theChamber.erase(theChamber.begin());
-    }
-    while((int)thePotion.size() > 0){
-	    theDisplay[thePotion[0]->getRow()][thePotion[0]->getCol()] = '.';
-	    thePotion.erase(thePotion.begin());
-    }
-    while((int)theGold.size() > 0){
-	    theDisplay[theGold[0]->getRow()][theGold[0]->getCol()] = '.';
-	    theGold.erase(theGold.begin());
-    }
-    for(int i = 0; i < numRow; i++){ // clear stair
-	    for(int j = 0; j < numCol ; ++j){
-		    if(theDisplay[i][j] == '\\') {
-			    theDisplay[i][j] = '.';
-		    }
-	    }
-    }
-    theDisplay[thePlayer->getRow()][thePlayer->getCol()] = '.';
-    thePlayer->setAtk(thePlayer->getdeAtk());
-    thePlayer->setDef(thePlayer->getdeDef());
-}*/
+int Floor::enemyIndex(int x, int y ) {
+	for (unsigned int id = 0; id <enemies.size(); id++)
+	{
+     if( enemies[id]->get_x() == x && enemies[id]->get_y())
+     	return id;
+	}
+	return 0;
+}
+
+
+void Floor::pAttack(string dir) {
+    vector<int> pos = checkTile(dir);
+    int enemyindex  = enemyIndex(pos[0], pos[1]);
+    player->damage(enemies[enemyindex]);
+    if (enemies[enemyindex]->get_HP() <= 0) {
+                display[enemies[enemyindex]->get_x()][enemies[enemyindex]->get_y()] = '.';
+                enemies.erase(enemies.begin()+enemyindex); 
+  }
+}
+
+
+void Floor::newLevel(){
+	player->set_Atk(player->getBaseAtk());
+    player->set_Def(player->getBaseDef());
+}
