@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <memory>
 #include <vector>
 #include <fstream>
@@ -23,12 +24,12 @@ int main(int argc, char* argv[]) {
     {
         while(1) {
             cout << "Welcome to CCK3+!" << endl;
-            //prompt to generate player
-            cout << "Please choose a character." << endl;
-            cout << "h: human." << endl;
-            cout << "d: dwarf." << endl;
-            cout << "e: elf." << endl;
-            cout << "o: orc." << endl;
+            
+            ifstream intro{"welcome.txt"};
+            string line;
+            while(getline(intro, line)){
+                cout << line << endl;
+            }
 
             auto newfloor = make_shared<Floor>(1);
             newfloor->genChamber();
@@ -121,7 +122,7 @@ int main(int argc, char* argv[]) {
                             break;
                         newfloor->printFloor();
                     } else {
-                        cout << "invalid command" <<endl;
+                        cout << "Invalid command" <<endl;
                     }
                 }
                 // 

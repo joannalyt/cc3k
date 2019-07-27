@@ -49,7 +49,6 @@ void Floor::genGold() {
   int chamberid;
   int goldtype;
   for (int i = 0; i < 10; i++) { //generate 10 gold
-
     chamberid = rand() % 5; //
     vector<int> pos = chambers[chamberid]->findRandom();
     display[pos[0]][pos[1]] = 'G';
@@ -485,9 +484,8 @@ void Floor::reset() {
 
 
 int Floor::enemyIndex(int x, int y ) {
-	for (unsigned int id = 0; id <enemies.size(); id++)
-	{
-     if( enemies[id]->get_x() == x && enemies[id]->get_y())
+	for (unsigned int id = 0; id <enemies.size(); id++){
+     if( enemies[id]->get_x() == x && enemies[id]->get_y() == y)
      	return id;
 	}
 	return 0;
@@ -499,9 +497,18 @@ void Floor::pAttack(string dir) {
     int enemyindex  = enemyIndex(pos[0], pos[1]);
     player->damage(enemies[enemyindex], enemies);
     if (enemies[enemyindex]->get_HP() <= 0) {
-                display[enemies[enemyindex]->get_x()][enemies[enemyindex]->get_y()] = '.';
-                enemies.erase(enemies.begin()+enemyindex); 
-  }
+    	if(enemies[enemyindex]->get_notation() == 'M'){
+    		int x = enemies[enemyindex]->get_x();
+    		int y = enemies[enemyindex]->get_y();
+    		enemies.erase(enemies.begin()+enemyindex);
+    		auto g = make_shared<Gold> (x, y, "merchant hoard", 'G', 4, true);
+    		golds.emplace_back(g);
+    		display[x][y] = 'G';
+    	} else{
+    		display[enemies[enemyindex]->get_x()][enemies[enemyindex]->get_y()] = '.';
+        	enemies.erase(enemies.begin()+enemyindex); 
+    	}
+  	}
 }
 
 

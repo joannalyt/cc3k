@@ -76,8 +76,6 @@ void Player::setAction(const string s)
 }
 
 
-
-//ceiling((100/(100+Def (Defender)))∗Atk(Attacker)),
 void Player::damage(shared_ptr<Enemy> e, vector<shared_ptr<Enemy>> enemies) {
     int combat = (int) ceil ((100.0 / (100+get_Def()))*e->get_Atk());
 
@@ -86,26 +84,26 @@ void Player::damage(shared_ptr<Enemy> e, vector<shared_ptr<Enemy>> enemies) {
     int newdamage = e->get_HP() - combat;
     ostringstream hp_str;
     
-    if(newdamage > 0)
-    {
-    e->set_HP(newdamage);
-    hp_str << newdamage; 
-    action = "PC attacked " + e->get_race() + ", dealed "+ combat_str.str() + " damage. [enemy hp:" + hp_str.str() + "]";
+    if(newdamage > 0){
+        e->set_HP(newdamage);
+        hp_str << newdamage; 
+        action = "PC attacked " + e->get_race() + ", dealed "+ combat_str.str() + " damage. [" + e->get_race() + " HP:" + hp_str.str() + "]. ";
     } else { // the enemy is killled
-       e->set_HP(0);
-       action = "Dealed "+ combat_str.str() + " damage. " + e->get_race()+ " is killed. ";
-       if(e->get_race()!="Merchant" && e->get_race()!="Dragon")
-       gold+=1;
-       //gold += e->getGold(); ????
-    if (e->get_race() == "Dragon") {
-      e->setDragonHoard(true);
-     } 
+        e->set_HP(0);
+        action = "Dealed "+ combat_str.str() + " damage. " + e->get_race()+ " is killed. ";
+        if(e->get_race()!="Merchant" && e->get_race()!="Dragon"){
+            gold+=1;
+        } else if(e->get_race() == "Dragon"){
+            e->setDragonHoard(true);
+        } else if(e->get_race() == "Merchant"){
+            //drop gold in void Floor::pAttack(string dir)
+        }
     }
-     if (e->get_race() == "Merchant") {
-      for (unsigned int i = 0; i < enemies.size(); i++) {
-        if(enemies[i]->get_notation() == 'M')
-        enemies[i]->setHostile(true);
-         }
+    if (e->get_race() == "Merchant") {
+        for (unsigned int i = 0; i < enemies.size(); i++) {
+            if(enemies[i]->get_notation() == 'M')
+            enemies[i]->setHostile(true);
+        }
     }
 }
 
