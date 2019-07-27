@@ -37,6 +37,9 @@ public:
 	void genEnemy();
 	std::vector<int> checkTile(std::string dir);//returns position after moving player to dir
 	bool movePlayer(std::string dir);
+	bool withinBlock(int ex, int ey);
+	void moveToNeighbour(std::shared_ptr<Enemy> pe);
+	void moveEnemy();
 	int getLevel();
 	void setLevel(int level);
 	void sethasWon(bool won);

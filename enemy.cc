@@ -54,4 +54,28 @@ void Enemy::attack(shared_ptr<Player> pc){ //this enemy attacks player pc
 	}
 }
 
+void Enemy::move(string dir){
+	if(dir == "no"){
+		set_x(get_x()-1);
+	} else if(dir == "ne"){
+		set_x(get_x()-1);
+        set_y(get_y()+1);
+	} else if(dir == "ea"){
+		set_y(get_y()+1);
+	} else if(dir == "se"){
+		set_x(get_x()+1);
+        set_y(get_y()+1);
+	} else if(dir == "so"){
+		set_x(get_x()+1);
+	} else if(dir == "sw"){
+		set_x(get_x()+1);
+        set_y(get_y()-1);
+	} else if(dir == "we"){
+		set_y(get_y()-1);
+	} else if(dir == "nw"){
+		set_x(get_x()-1);
+        set_y(get_y()-1);
+	}
+}
+
 

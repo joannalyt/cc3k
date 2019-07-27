@@ -69,9 +69,7 @@ void Floor::genGold() {
 
    
  void Floor::genPlayer(shared_ptr<Player> pp){
-
  	player = pp;
-
  	int chamberid = rand() % 5; //
     player->setId(chamberid);
     vector<int> pos = chambers[chamberid]->findRandom();
@@ -304,6 +302,121 @@ bool Floor::movePlayer(string dir){
 	return false;
 }
 
+bool Floor::withinBlock(int ex, int ey){ //checks if <ex,ey> is neighbour of player
+	int x1 = player->get_x();
+	int y1 = player->get_y();
+	if((ex == x1-1 && ey == y1-1)||(ex == x1-1 && ey == y1)||(ex == x1-1 && ey == y1+1)){
+		return true;
+	} else if((ex == x1 && ey == y1-1)||(ex == x1 && ey == y1+1)){
+		return true;
+	} else if((ex == x1+1 && ey == y1-1)||(ex == x1+1 && ey == y1)||(ex == x1+1 && ey == y1+1)){
+		return true;
+	}
+	return false;
+}
+
+void Floor::moveToNeighbour(shared_ptr<Enemy> pe){
+	int x1 = pe->get_x();
+	int y1 = pe->get_y();
+	while(true){
+		int random = rand() % 9;
+		if(random == 0){
+			if(checkDisplay(x1-1,y1-1,'.')){
+				pe->move("nw");
+				display[x1-1][y1-1] = display[x1][y1];
+				display[x1][y1] = '.';
+				return;
+			}
+		} else if(random == 1){
+			if(checkDisplay(x1-1,y1,'.')){
+				pe->move("no");
+				display[x1-1][y1] = display[x1][y1];
+				display[x1][y1] = '.';
+				return;
+			}
+		} else if(random == 2){
+			if(checkDisplay(x1-1,y1+1,'.')){
+				pe->move("ne");
+				display[x1-1][y1+1] = display[x1][y1];
+				display[x1][y1] = '.';
+				return;
+			}
+		} else if(random == 3){
+			if(checkDisplay(x1,y1-1,'.')){
+				pe->move("we");
+				display[x1][y1-1] = display[x1][y1];
+				display[x1][y1] = '.';
+				return;
+			}
+		} else if(random == 4){
+			if(checkDisplay(x1,y1+1,'.')){
+				pe->move("ea");
+				display[x1][y1+1] = display[x1][y1];
+				display[x1][y1] = '.';
+				return;
+			}
+		} else if(random == 5){
+			if(checkDisplay(x1+1,y1-1,'.')){
+				pe->move("sw");
+				display[x1+1][y1-1] = display[x1][y1];
+				display[x1][y1] = '.';
+				return;
+			}
+		} else if(random == 6){
+			if(checkDisplay(x1+1,y1,'.')){
+				pe->move("so");
+				display[x1+1][y1] = display[x1][y1];
+				display[x1][y1] = '.';
+				return;
+			}
+		} else if(random == 7){
+			if(checkDisplay(x1+1,y1+1,'.')){
+				pe->move("se");
+				display[x1+1][y1+1] = display[x1][y1];
+				display[x1][y1] = '.';
+				return;
+			}
+		} else{ //does not move
+			return;
+		}
+	}	
+}
+
+void Floor::moveEnemy(){
+	int x1 = player->get_x();
+	int y1 = player->get_y();
+	cout << x1<<endl;
+	cout << y1<<endl;
+	for(unsigned int i = 0; i < enemies.size(); i++){
+		if(!withinBlock(enemies[i]->get_x(), enemies[i]->get_y())){
+			moveToNeighbour(enemies[i]);
+		} else{
+
+		}
+	}
+}
+
+/*void Floor::moveEnemy(){
+	int x1 = player->get_x();
+	int y1 = player->get_y();
+	cout << enemies.size() << endl;
+	for(unsigned int i = 0; i < display.size()-1; i++){
+		for(unsigned int j = 0; j < display[i].size()-1; j++){
+			for(unsigned int e = 0; e < enemies.size(); e++){
+				if(enemies[e]->get_x() == i && enemies[e]->get_y() == j){//this position has an enemy
+					cout << enemies[e]->get_notation() << endl;
+					if(!withinBlock(x1, y1)){
+						//moveToNeighbour(enemies[e]);
+					} else{//within 1 block of player, does not move and attack
+						//enemies[e]->attack(player);
+					}
+				}
+			}
+		}
+	}
+}*/
+
+
 int Floor::getLevel(){
 	return level;
 }
@@ -378,3 +491,7 @@ void Floor::newLevel(){
 	player->set_Atk(player->getBaseAtk());
     player->set_Def(player->getBaseDef());
 }
+
+
+
+

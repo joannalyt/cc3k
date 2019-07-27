@@ -109,6 +109,8 @@ int main(int argc, char* argv[]) {
                         }
                     }
                     if (newfloor->movePlayer(c)) {
+                        cout << "moved player" << endl;
+                        newfloor->moveEnemy();
                         if (newfloor->hasLost())
                             break;
                         newfloor->printFloor();
