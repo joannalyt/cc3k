@@ -136,7 +136,7 @@ void Floor::genChamber(){
 void Floor::genEnemy(){
 	int count_dragon;
 	count_dragon = 0;
-	for(int i = 0; i < 10; i++){
+	for(unsigned int i = 0; i < golds.size(); i++){
 		if(golds[i]->getGold() == 6){//dragon hoard
 			golds[i]->setIspickable(0);
 			count_dragon++;
@@ -384,11 +384,20 @@ void Floor::moveToNeighbour(shared_ptr<Enemy> pe){
 
 void Floor::moveEnemy(){
 	for(unsigned int i = 0; i < enemies.size(); i++){
+		if(enemies[i]->get_notation() == 'D'){
+			shared_ptr<Gold> hoard = enemies[i]->getDragonHoard();
+			if(withinBlock(hoard->get_x(), hoard->get_y())){
+				enemies[i]->setHostile(true);
+			} else{
+				enemies[i]->setHostile(false);
+			}
+		}
 		if(!withinBlock(enemies[i]->get_x(), enemies[i]->get_y())){
 			if(enemies[i]->get_notation() != 'D'){
 				moveToNeighbour(enemies[i]);
 			}
-		} else{ //attack if hostile
+		} 
+		if(withinBlock(enemies[i]->get_x(), enemies[i]->get_y())){ //attack if hostile
 			if(enemies[i]->getHostile()){
 				enemies[i]->attack(player);
 			}
@@ -396,27 +405,6 @@ void Floor::moveEnemy(){
 		}
 	}
 }
-
-/*void Floor::moveEnemy(){
-	int x1 = player->get_x();
-	int y1 = player->get_y();
-	cout << enemies.size() << endl;
-	for(unsigned int i = 0; i < display.size()-1; i++){
-		for(unsigned int j = 0; j < display[i].size()-1; j++){
-			for(unsigned int e = 0; e < enemies.size(); e++){
-				if(enemies[e]->get_x() == i && enemies[e]->get_y() == j){//this position has an enemy
-					cout << enemies[e]->get_notation() << endl;
-					if(!withinBlock(x1, y1)){
-						//moveToNeighbour(enemies[e]);
-					} else{//within 1 block of player, does not move and attack
-						//enemies[e]->attack(player);
-					}
-				}
-			}
-		}
-	}
-}*/
-
 
 int Floor::getLevel(){
 	return level;

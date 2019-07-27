@@ -78,4 +78,16 @@ void Enemy::move(string dir){
 	}
 }
 
+shared_ptr<Gold> Enemy::getDragonHoard(){}
+
+void Enemy::setDragonHoard(bool pickable){}
+
+shared_ptr<Gold> Dragon::getDragonHoard(){
+	return dragonHoard;
+}
+
+void Dragon::setDragonHoard(bool pickable){
+	dragonHoard->setIspickable(pickable);
+}
+
 
