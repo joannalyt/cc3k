@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <vector>
 #include <cmath> //cmath or math? 
 #include <string>
 #include "player.h"
@@ -48,13 +49,13 @@ int Player::getGold(){
 void Player::setGold(shared_ptr<Gold> g)
 {
     if(g->isPickable()){
-        gold += g->getGold();
+    gold += g->getGold();
     }
     ostringstream gold_str;
     gold_str << g->getGold();
 
-    action = "you get: " + gold_str.str() + " .";
-   /* if(g->get_Itemtype() == "normal"){
+    //action = "you get: " + gold_str.str() + " .";
+   if(g->get_Itemtype() == "normal"){
         action = "PC gets a normal gold. Value:1";
     }
     else if(g->get_Itemtype()=="small"){
@@ -65,7 +66,7 @@ void Player::setGold(shared_ptr<Gold> g)
     }
     else if(g->get_Itemtype()=="dragon hoard"){
         action = "PC gets a dragon hoard. Value:6";
-    } */
+    } 
 
 }
 
@@ -74,9 +75,10 @@ void Player::setAction(const string s)
     this->action = s;
 }
 
+
+
 //ceiling((100/(100+Def (Defender)))∗Atk(Attacker)),
-void Player::damage(shared_ptr<Enemy> e)
-{
+void Player::damage(shared_ptr<Enemy> e, vector<shared_ptr<Enemy>> enemies) {
     int combat = (int) ceil ((100.0 / (100+get_Def()))*e->get_Atk());
 
     ostringstream combat_str;
@@ -88,19 +90,22 @@ void Player::damage(shared_ptr<Enemy> e)
     {
     e->set_HP(newdamage);
     hp_str << newdamage; 
-    action = "PC attacked " + e->get_race() + ". Dealed "+ combat_str.str() + " damage. [ hp:" + hp_str.str() + " ]";
+    action = "PC attacked " + e->get_race() + ", dealed "+ combat_str.str() + " damage. [enemy hp:" + hp_str.str() + "]";
     } else { // the enemy is killled
        e->set_HP(0);
-       action = e->get_race()+ " is killed";
+       action = "Dealed "+ combat_str.str() + " damage. " + e->get_race()+ " is killed. ";
        if(e->get_race()!="Merchant" && e->get_race()!="Dragon")
        gold+=1;
        //gold += e->getGold(); ????
-   /* if (e->getRace() == "Dragon") {
-      e->setHoardPickable();
-     } figure out wt this means*/
+    if (e->get_race() == "Dragon") {
+      e->setDragonHoard();
+     } 
     }
      if (e->get_race() == "Merchant") {
-      e->setHostile(true);
+      for (unsigned int i = 0; i < enemies.size(); i++) {
+        if(enemies[i]->get_notation() == 'M')
+        enemies[i]->setHostile(true);
+         }
     }
 }
 
