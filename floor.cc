@@ -31,8 +31,8 @@ Floor::Floor(int level, string file): level{level},player{nullptr} {
 
 void Floor:: printFloor(){  
 	for(unsigned int i= 0; i < display.size(); i++){
-		for ( unsigned int j = 0; j < display[i].size(); j++){
-			cout << display[i][j];
+		for ( unsigned int j = 0; j < display.at(i).size(); j++){
+			cout << (display.at(i)).at(j);
 		}
 		cout << endl;	
 	}
@@ -68,15 +68,18 @@ void Floor::genGold() {
 }
 
    
- void Floor::genPlayer(shared_ptr<Player> pp){
- 	player = pp;
- 	int chamberid = rand() % 5; //
+ void Floor::genPlayer(){
+  	int chamberid = rand() % 5; //
     player->setId(chamberid);
     vector<int> pos = chambers[chamberid]->findRandom();
     display[pos[0]][pos[1]] = '@';
     player->set_x(pos[0]);
     player->set_y(pos[1]);
    
+ }
+ void Floor::setPlayer (shared_ptr<Player> pp)
+ {
+ 	player = pp;
  }
 
  void Floor::genStair(){
@@ -406,6 +409,24 @@ void Floor::moveEnemy(){
 	}
 }
 
+bool Floor::usePotion(string dir){
+	int x1 = checkTile(dir)[0];
+	int y1 = checkTile(dir)[1];
+	char nextTile = display[x1][y1];
+	if(nextTile == 'P'){
+		for(unsigned int i = 0; i < potions.size(); i++){
+			if(potions[i]->get_x() == x1 && potions[i]->get_y() == y1){
+				cout << "found potion " <<endl;
+				player->applyPotion(potions[i]);
+				display[x1][y1] = '.';
+				potions.erase(potions.begin()+i);
+				return true;
+			}
+		}
+	} 
+	return false;
+}
+
 int Floor::getLevel(){
 	return level;
 }
@@ -435,19 +456,27 @@ bool Floor::checkDisplay (int x, int y,char c)
 }
 
 
-void Floor:: generateandprint() {
-	genStair();
-    genPotion();
-    genGold();
-    genEnemy();
-    printFloor();
+void Floor:: readfile(string file) {
+    ifstream ifs{file};
+	string s;
+	while (getline(ifs, s))	{
+    vector <char> line;
+    for( unsigned int i = 0; i< s.length(); i++){
+    	line.emplace_back(s.at(i));
+    }
+    display.emplace_back(line);
+	}
+	origSymbol = '.';
 }
 
 void Floor::reset() {
    //player.clear();
  for (unsigned int i = 0; i < display.size(); i++) {
-  	display[i].clear();
- }   
+ 	   display[i].clear();
+ 	  
+ }
+  display.clear();
+   //cout << display[1].size();
    golds.clear();
    potions.clear();
    enemies.clear();

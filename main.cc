@@ -38,20 +38,23 @@ int main(int argc, char* argv[]) {
             while(1) {
                 if (race == 'h') {
                     auto player = make_shared<Human>();
-
-                    newfloor->genPlayer(player);
+                    newfloor->setPlayer(player);
+                    newfloor->genPlayer();
                     break;
                 } else if (race == 'd') {
                     auto player = make_shared<Dwarf>();
-                    newfloor->genPlayer(player);
+                    newfloor->setPlayer(player);
+                    newfloor->genPlayer();
                     break;
                 } else if (race == 'e') {
                     auto player = make_shared<Elf>();
-                    newfloor->genPlayer(player);
+                    newfloor->setPlayer(player);
+                    newfloor->genPlayer();
                     break;
                 } else if (race == 'o') {
                     auto player = make_shared<Orc>();
-                    newfloor->genPlayer(player);
+                    newfloor->setPlayer(player);
+                    newfloor->genPlayer();
                     break;
                 }
                 else {
@@ -99,8 +102,11 @@ int main(int argc, char* argv[]) {
                             newfloor->setAction("Welcome to a new floor!"); // add getplayer function
                             // add this function
                             newfloor->reset();
-                            newfloor->newLevel();
+                            newfloor->readfile("default.txt");
+                            //auto newfloor = make_shared<Floor>(newfloor->getLevel() + 1);
                             newfloor->genChamber();
+                            newfloor->genPlayer();
+                            newfloor->newLevel();
                             newfloor->genStair();
                             newfloor->genPotion();
                             newfloor->genGold();
@@ -108,7 +114,7 @@ int main(int argc, char* argv[]) {
                             newfloor->printFloor();
                         }
                     }
-                    if (newfloor->movePlayer(c)) {
+                    else if (newfloor->movePlayer(c)) {
                         //cout << "moved player" << endl;
                         newfloor->moveEnemy();
                         if (newfloor->hasLost())
@@ -138,7 +144,17 @@ int main(int argc, char* argv[]) {
                 }
                 else if (c == "q") {
                     break;
-                } else {
+                } 
+                else if(c == "u"){
+                    cin >> c;
+                    if(newfloor->usePotion(c)){
+                        newfloor->printFloor();
+                    } else {
+                        cout << "Not Valid, try again " << endl;
+                    }
+                }
+
+                else {
                     cout << "Not Valid, try again " << endl;
                 }
             }

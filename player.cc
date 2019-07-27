@@ -98,7 +98,7 @@ void Player::damage(shared_ptr<Enemy> e, vector<shared_ptr<Enemy>> enemies) {
        gold+=1;
        //gold += e->getGold(); ????
     if (e->get_race() == "Dragon") {
-      e->setDragonHoard();
+      e->setDragonHoard(true);
      } 
     }
      if (e->get_race() == "Merchant") {
@@ -150,11 +150,52 @@ void Player::move(string dir)
     }
 }     
 
-/*void Player::usePotion(shared_ptr<Potion> p)
-{
-    p->getPotion();
+void Player::applyPotion(shared_ptr<Potion> pp){
+    int effect = pp->getPotion();
+    if(get_race() == "Elf"){
+        if(effect < 0){
+            effect = effect * -1;
+        }
+    }
+    if(pp->get_Itemtype() == "RH"){
+        if(get_HP()+effect < get_maxHP()){
+            set_HP(get_HP()+effect);
+            action = "PC uses Restore Health. ";
+            return;
+        }
+        action = "PC cannot use Restore Health. ";
+    } else if(pp->get_Itemtype() == "PH"){
+        if(get_HP()+effect >= 0){
+            set_HP(get_HP()+effect);
+            action = "PC uses Poison Health. ";
+            return;
+        }
+        action = "PC cannot use Poison Health. ";
+    } else if(pp->get_Itemtype() == "BA"){
+        set_Atk(get_Atk()+effect);
+        action = "PC uses Boost Atk. ";
+        return;
+    } else if(pp->get_Itemtype() == "WA"){
+        if(get_Atk()+effect >= 0){
+            set_Atk(get_Atk()+effect);
+            action = "PC uses Wound Atk. ";
+            return;
+        }
+        action = "PC cannot use Wound Atk. ";
+    } else if(pp->get_Itemtype() == "BD"){
+        set_Def(get_Def()+effect);
+        action = "PC uses Boost Def. ";
+           return;
+    } else if(pp->get_Itemtype() == "WD"){
+        if(get_Def()+effect >= 0){
+            set_Def(get_Def()+effect);
+            action = "PC uses Wound Def. ";
+            return;
+        }
+        action = "PC cannot use Wound Def. ";
+    }
+}
 
-}*/
 Player :: ~Player(){}
 
 

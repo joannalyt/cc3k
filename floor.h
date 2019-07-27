@@ -30,7 +30,7 @@ public:
 	Floor(int level, std::string file = "default.txt");
 	void printFloor();//add display msg
 	void genGold();
-	void genPlayer(std::shared_ptr<Player> pp);
+	void genPlayer();
 	void genStair();
 	void genPotion();
 	void genChamber();
@@ -40,6 +40,7 @@ public:
 	bool withinBlock(int ex, int ey);
 	void moveToNeighbour(std::shared_ptr<Enemy> pe);
 	void moveEnemy();
+	bool usePotion(std::string dir);
 	int getLevel();
 	void setLevel(int level);
 	void sethasWon(bool won);
@@ -51,8 +52,10 @@ public:
 	void reset();
 	void newLevel();
 	int enemyIndex();
+	void readfile(std::string file);
 	void pAttack(std::string dir);
 	int enemyIndex(int x, int y );
+	void setPlayer (std:: shared_ptr<Player> pp);
 	~Floor();
 
 	//void createFloor();
