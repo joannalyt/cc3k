@@ -118,17 +118,18 @@ int main(int argc, char* argv[]) {
                         cout << "invalid command" <<endl;
                     }
                 }
-                else if (c == "a") {  // attack enemy
-                    cin >> c;  // read direction
-                    if (check(newfloor,c, 'V') || check(newfloor,c, 'W') || check(newfloor,c, 'N') ||
-                        check(newfloor,c, 'M') || check(newfloor,c, 'D') || check(newfloor,c, 'X') ||
-                        check(newfloor,c, 'T') || check(newfloor,c, 'E')) {  // checks if there's enemy on the direction command
-                        newfloor->pAttack(c);  // attack is in player class
+                // 
+                else if (c == "a") { 
+                    cin >> c;  // read in the direction  and check if enemy is in the area
+                    if (check(newfloor,c, 'W') || check(newfloor,c, 'V') || check(newfloor,c, 'D') ||
+                        check(newfloor,c, 'M') || check(newfloor,c, 'N') || check(newfloor,c, 'X') ||
+                        check(newfloor,c, 'T')) {  
+                        newfloor->pAttack(c);  // class floor's pAttack
                         newfloor->moveEnemy();
-                        if(newfloor->hasLost()) break;// PC dies
+                        if(newfloor->hasLost()) break;
                         newfloor->printFloor();
                     } else {
-                        cout << "\033[1;31mThere's no enemy in the direction you pointed.\033[0m" << endl;
+                        cout << "No enemies in the area" << endl;
                     }
                 }
                 else if (c == "r") {

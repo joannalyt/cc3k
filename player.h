@@ -4,6 +4,7 @@
 #include "gold.h"
 #include "potion.h"
 #include <iostream>
+#include <vector>
 #include <memory>
 #include <string>
 
@@ -31,7 +32,7 @@ class Player: public Character
     void setAction(const std::string s);
    
     
-    void damage(std::shared_ptr<Enemy> e);
+    void damage(std::shared_ptr<Enemy> e, std::vector<std::shared_ptr<Enemy>> enemies);
 
     void move(std::string dir);      
 

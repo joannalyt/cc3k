@@ -480,7 +480,7 @@ int Floor::enemyIndex(int x, int y ) {
 void Floor::pAttack(string dir) {
     vector<int> pos = checkTile(dir);
     int enemyindex  = enemyIndex(pos[0], pos[1]);
-    player->damage(enemies[enemyindex]);
+    player->damage(enemies[enemyindex], enemies);
     if (enemies[enemyindex]->get_HP() <= 0) {
                 display[enemies[enemyindex]->get_x()][enemies[enemyindex]->get_y()] = '.';
                 enemies.erase(enemies.begin()+enemyindex); 
