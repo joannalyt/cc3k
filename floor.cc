@@ -12,11 +12,13 @@
 #include <utility>
 #include <cstdlib>
 #include <vector>
+#include <ctime>
 
 using namespace std;
 
 Floor ::~Floor(){reset();}
 Floor::Floor(int level, string file): level{level},player{nullptr} {
+	srand(time(NULL));
 	ifstream ifs{file};
 	string s;
 	while (getline(ifs, s))	{
@@ -27,25 +29,41 @@ Floor::Floor(int level, string file): level{level},player{nullptr} {
     display.emplace_back(line);
 	}
 	origSymbol = '.';
+
+	barrierLevel = rand()%5+1;
 }
 
 void Floor:: printFloor(){  
 	for(unsigned int i= 0; i < display.size(); i++){
 		for ( unsigned int j = 0; j < display.at(i).size(); j++){
-			cout << (display.at(i)).at(j);
+			char c = (display.at(i)).at(j);
+			if(c == 'W'||c == 'V'||c == 'N'||c =='D'||c == 'X'||c =='T'||c == 'M'){
+				cout<<"\033[1m\033[31m"<<c<<"\033[0m";
+			} else if(c == 'P'){
+				cout<<"\033[1m\033[32m"<<c<<"\033[0m";
+			} else if(c == 'G'){
+				cout<<"\033[1m\033[33m"<<c<<"\033[0m";
+			} else if(c == '@'){
+				cout<<"\033[1m\033[34m"<<c<<"\033[0m";
+			} else if(c == 'B'){
+				cout<<"\033[1m\033[35m"<<c<<"\033[0m";
+			} else {
+				cout << "\033[1m\033[36m"<< c << "\033[0m";
+			}
 		}
 		cout << endl;	
 	}
-	cout << "Race: " << player->get_race() << " Gold: " << player->getGold();
-    cout << "                                         Floor:" << level<<endl;
+	cout <<"\033[1m\033[36m"<<"Race: "<< player->get_race() << " Gold: " << player->getGold();
+    cout << "                                                      Floor:" << level<<endl;
     cout << "HP: " << player->get_HP() << endl;
     cout << "Atk: " << player->get_Atk() << endl;
     cout << "Def: " << player->get_Def() << endl;
-    cout << "Action: " << player->getAction() << endl; 
+    cout << "Action: " << player->getAction() << endl<<"\033[0m"; 
 }
 
 
 void Floor::genGold() {
+	srand(time(NULL));
   int chamberid;
   int goldtype;
   for (int i = 0; i < 10; i++) { //generate 10 gold
@@ -64,10 +82,19 @@ void Floor::genGold() {
        golds.emplace_back(g);
     }
   }
+  if(level == barrierLevel){
+  	cout << "got here" <<endl;
+  	chamberid = rand() % 5; //
+    vector<int> pos = chambers[chamberid]->findRandom();
+    display[pos[0]][pos[1]] = 'B';
+  	auto g = make_shared<Gold> (pos[0], pos[1], "barrier suit", 'B', 0, false);
+  	golds.emplace_back(g);
+  }
 }
 
    
  void Floor::genPlayer(){
+ 	srand(time(NULL));
   	int chamberid = rand() % 5; //
     player->setId(chamberid);
     vector<int> pos = chambers[chamberid]->findRandom();
@@ -82,6 +109,7 @@ void Floor::genGold() {
  }
 
  void Floor::genStair(){
+ 	srand(time(NULL));
  	int chamberid = rand() % 5;
      while(chamberid == player->getId())
     { 
@@ -93,6 +121,7 @@ void Floor::genGold() {
  }
 
  void Floor::genPotion(){
+ 	srand(time(NULL));
  	int chamberid;
 	for (int i = 0; i < 10; i++) {
     chamberid = rand() % 5; //generate a random num from 0-4
@@ -136,10 +165,11 @@ void Floor::genChamber(){
 }
 
 void Floor::genEnemy(){
+	srand(time(NULL));
 	int count_dragon;
 	count_dragon = 0;
 	for(unsigned int i = 0; i < golds.size(); i++){
-		if(golds[i]->getGold() == 6){//dragon hoard
+		if(golds[i]->getGold() == 6||golds[i]->getGold() == 0){//dragon hoard or barrier suit
 			golds[i]->setIspickable(0);
 			count_dragon++;
 			while(true){
@@ -302,6 +332,23 @@ bool Floor::movePlayer(string dir){
 				}
 			}
 		}
+	} else if(nextTile == 'B'){
+		for(unsigned int i = 0; i < golds.size(); i++){
+			if((golds[i]->get_x() == checkTile(dir)[0]) && (golds[i]->get_y() == checkTile(dir)[1])){
+				if(golds[i]->isPickable()){
+					golds.erase(golds.begin()+i);
+					nextTile = '.';
+					player->move(dir);
+					display[x1][y1]=origSymbol;
+					int x2 = player->get_x();
+					int y2 = player->get_y();
+					display[x2][y2]='@';
+					origSymbol=nextTile;
+					player->setBarrier(true);
+					return true;
+				}
+			}
+		}
 	}
 	return false;
 }
@@ -320,6 +367,7 @@ bool Floor::withinBlock(int ex, int ey){ //checks if <ex,ey> is neighbour of pla
 }
 
 void Floor::moveToNeighbour(shared_ptr<Enemy> pe){
+	srand(time(NULL));
 	int x1 = pe->get_x();
 	int y1 = pe->get_y();
 	while(true){
@@ -499,8 +547,8 @@ void Floor::pAttack(string dir) {
     vector<int> pos = checkTile(dir);
     int enemyindex  = enemyIndex(pos[0], pos[1]);
     player->damage(enemies[enemyindex], enemies);
-    if (enemies[enemyindex]->get_HP() <= 0) {
-    	if(enemies[enemyindex]->get_notation() == 'M'){
+    if (enemies[enemyindex]->get_HP() <= 0) { //merchant dies
+    	if(enemies[enemyindex]->get_notation() == 'M'){ 
     		int x = enemies[enemyindex]->get_x();
     		int y = enemies[enemyindex]->get_y();
     		enemies.erase(enemies.begin()+enemyindex);

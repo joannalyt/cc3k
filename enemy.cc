@@ -39,6 +39,9 @@ void Enemy::attack(shared_ptr<Player> pc){ //this enemy attacks player pc
 		int random = rand()%2;
 		if(random){
 			int damage = ceil((100.0/(100+pc->get_Def()))*get_Atk());
+			if(pc->getBarrier()){
+				damage = ceil(damage/2);
+			}
 			int curHP = pc->get_HP();
 			if(curHP - damage > 0){
 				pc->set_HP(curHP-damage);
