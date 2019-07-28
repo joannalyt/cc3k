@@ -12,7 +12,7 @@
 using namespace std;
 
 Player::Player(int hp, int atk, int def,int maxHP, int x, int y, string race, int id):
-Character {hp, atk ,def,maxHP, x, y, race, '@'},gold{0},id{id},baseAtk{atk},baseDef{def}{
+Character {hp, atk ,def,maxHP, x, y, race, '@'},gold{0},id{id},baseAtk{atk},baseDef{def},hasBarrier{false}{
     action = "Player character has spawned.";
 }
 
@@ -195,6 +195,15 @@ void Player::applyPotion(shared_ptr<Potion> pp){
 }
 
 Player :: ~Player(){}
+
+bool Player::getBarrier(){
+    return hasBarrier;
+}
+
+void Player::setBarrier(bool b){
+    hasBarrier = b;
+    action = "You got the Barrier Suit! Your damage will be reduced by half. ";
+}
 
 
 

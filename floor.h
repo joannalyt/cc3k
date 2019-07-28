@@ -9,15 +9,9 @@
 #include "gold.h"
 #include "potion.h"
 
-/*class Player;
-class Enemy;
-
-class Potion;
-class Gold;*/
-//class Chamber;
 
 class Floor{
-	int level;
+	int level, barrierLevel;
 	std::shared_ptr<Player> player;
 	std::vector<std::vector<char>> display;
 	std::vector<std::shared_ptr<Enemy>> enemies;
@@ -62,10 +56,5 @@ public:
 };
 
 
-
-
-
-
-
-
 #endif
+
