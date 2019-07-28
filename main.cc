@@ -94,6 +94,11 @@ int main(int argc, char* argv[]) {
                     if(newfloor->getLevel() == 5) {
                         newfloor->sethasWon(true);
                         cout << "You've won!! Your final score is: ";
+                        ifstream intro{"win.txt"};
+                        string line;
+                        while(getline(intro, line)){
+                            cout << line << endl;
+                        }
                         if(race == 'h') { // add getGold function
                             cout << (newfloor->getGold()*1.5) << endl;
                         }
@@ -138,8 +143,14 @@ int main(int argc, char* argv[]) {
                 else if (newfloor->movePlayer(c)) {
                     //cout << "moved player" << endl;
                     newfloor->moveEnemy();
-                    if (newfloor->hasLost())
+                    if (newfloor->hasLost()){
+                        ifstream intro{"lose.txt"};
+                        string line;
+                        while(getline(intro, line)){
+                            cout << line << endl;
+                        }
                         break;
+                    }  
                     newfloor->printFloor();
                 } else {
                     cout << "Invalid command" <<endl;
@@ -180,7 +191,11 @@ int main(int argc, char* argv[]) {
             }
         }
         if (c == "q") {
-            cout << "Thanks for Playing!" << endl;
+            ifstream intro{"bye.txt"};
+            string line;
+            while(getline(intro, line)){
+                cout << line << endl;
+            }
             break;
         }
     }
