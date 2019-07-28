@@ -56,6 +56,7 @@ public:
 	void pAttack(std::string dir);
 	int enemyIndex(int x, int y );
 	void setPlayer (std:: shared_ptr<Player> pp);
+	void readFloor(std::string file);
 	~Floor();
 
 	//void createFloor();

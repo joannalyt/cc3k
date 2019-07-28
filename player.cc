@@ -47,25 +47,37 @@ int Player::getGold(){
 
 //setGold and update Action
 void Player::setGold(shared_ptr<Gold> g)
-{
+{  
+    int amt = 0;
     if(g->isPickable()){
-    gold += g->getGold();
+        if(get_race() == "Dwarf") {
+            amt = g->getGold() * 2;
+            gold += amt;
+        }
+        else if(get_race() == "Orc") {
+            amt =  (int)ceil(g->getGold()/ 2.0);
+            gold += amt;
+        }
+        else { 
+            amt = g->getGold();
+            gold += amt;
+        }
     }
     ostringstream gold_str;
-    gold_str << g->getGold();
+    gold_str << amt;
 
-    //action = "you get: " + gold_str.str() + " .";
+    action = "Based on your player type, you get: " + gold_str.str() + " gold. ";
    if(g->get_Itemtype() == "normal"){
-        action = "PC gets a normal gold. Value:1";
+        action += "PC gets a normal gold. Value:1 ";
     }
     else if(g->get_Itemtype()=="small"){
-        action = "PC gets a small gold. Value:2";
+        action += "PC gets a small gold. Value:2 ";
     }
     else if(g->get_Itemtype()=="merchant hoard"){
-        action = "PC gets a merchant hoard. Value:4";
+        action += "PC gets a merchant hoard. Value:4 ";
     }
     else if(g->get_Itemtype()=="dragon hoard"){
-        action = "PC gets a dragon hoard. Value:6";
+        action += "PC gets a dragon hoard. Value:6 ";
     } 
 
 }
@@ -112,39 +124,39 @@ void Player::move(string dir)
 {
     if(dir == "no"){
         set_x(get_x()-1);
-        action = "PC moves North.";
+        action = "PC moves North. ";
     }
     else if(dir == "so"){
         set_x(get_x()+1);
-        action = "PC moves South.";
+        action = "PC moves South. ";
     }
     else if(dir == "we"){
         set_y(get_y()-1);
-        action = "PC moves West.";
+        action = "PC moves West. ";
     }
     else if(dir == "ea"){
         set_y(get_y()+1);
-        action = "PC moves East.";
+        action = "PC moves East. ";
     }    
     else if(dir == "ne"){
         set_x(get_x()-1);
         set_y(get_y()+1);
-        action = "PC moves NorthEast.";
+        action = "PC moves NorthEast. ";
     }
     else if(dir == "se"){
         set_x(get_x()+1);
         set_y(get_y()+1);
-        action = "PC moves SouthEast.";
+        action = "PC moves SouthEast. ";
     }
     else if(dir == "sw"){
         set_x(get_x()+1);
         set_y(get_y()-1);
-        action = "PC moves SouthWest.";
+        action = "PC moves SouthWest. ";
     }
     else if(dir == "nw"){
         set_x(get_x()-1);
         set_y(get_y()-1);
-        action = "PC moves NorthWest.";    
+        action = "PC moves NorthWest. ";    
     }
 }     
 

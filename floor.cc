@@ -288,9 +288,11 @@ bool Floor::movePlayer(string dir){
 			if((golds[i]->get_x() == checkTile(dir)[0]) && (golds[i]->get_y() == checkTile(dir)[1])){
 				if(golds[i]->isPickable()){
 					player->setGold(golds[i]);
+					string goldaction = player->getAction();
 					golds.erase(golds.begin()+i);
 					nextTile = '.';
 					player->move(dir);
+					player->setAction(player->getAction() +goldaction);
 					display[x1][y1]=origSymbol;
 					int x2 = player->get_x();
 					int y2 = player->get_y();
@@ -455,7 +457,7 @@ bool Floor::checkDisplay (int x, int y,char c)
 }
 
 
-void Floor:: readfile(string file) {
+void Floor::readfile(string file) {
     ifstream ifs{file};
 	string s;
 	while (getline(ifs, s))	{
@@ -474,12 +476,13 @@ void Floor::reset() {
  	   display[i].clear();
  	  
  }
-  display.clear();
-   //cout << display[1].size();
+   display.clear();
+   
    golds.clear();
    potions.clear();
    enemies.clear();
    chambers.clear();
+
 }
 
 
@@ -518,5 +521,132 @@ void Floor::newLevel(){
 }
 
 
+void Floor::readFloor(string file) {
+	ifstream ifs{file};
+	string s;
+	int x = 0, y=0;
 
+	int baseBegin = 25 * (level-1);
+    cout << baseBegin << endl;
+	for (int begin = 25 * (level-1); begin < baseBegin + 25; ++begin) {
+	  getline(ifs, s);
+	  vector <char> line;    
+	  
+	     for (unsigned int i = 0; i < s.length(); ++i) {
+	 		   if (s.at(i) == '0') {
+				   line.emplace_back('P');
+				   auto potion = make_shared<Potion> (begin- baseBegin, i, "RH", 'P', 10);
+				   potions.emplace_back(potion);
+			   } 
+			   else if (s.at(i) == '1') {
+			   	    line.emplace_back('P');
+				    auto potion = make_shared<Potion> (begin - baseBegin, i,"BA", 'P', 5);
+				    potions.emplace_back(potion);				   
+	            }
+			   else if (s.at(i) == '2') {
+			   		line.emplace_back('P');
+				   	auto potion = make_shared<Potion> (begin - baseBegin, i,"BD", 'P', 5);
+				    potions.emplace_back(potion);       
+				}   				                              
+			   else if (s.at(i)== '3') {
+			   	    line.emplace_back('P');
+				    auto potion = make_shared<Potion> (begin - baseBegin, i,"PH", 'P', -10);
+				    potions.emplace_back(potion);
+			    } 
+			   else if (s.at(i)== '4') {
+			   	   	line.emplace_back('P');
+				   	auto potion = make_shared<Potion> (begin - baseBegin, i,"WA", 'P', -5);
+				   	potions.emplace_back(potion);
+				}
+				else if (s.at(i) == '5') {
+			   	    line.emplace_back('P');
+				    auto potion = make_shared<Potion> (begin - baseBegin, i,"WD", 'P', -5);
+				    potions.emplace_back(potion);				   	            
+			    } 
+			   else if (s.at(i) == '6') {
+			   	    line.emplace_back('G');
+				   	auto gold = make_shared<Gold> (begin - baseBegin, i, "normal", 'G', 1, true);
+				    golds.emplace_back(gold);
+                } 
+			   else if (s.at(i) == '7') {
+			   	   	line.emplace_back('G');
+				   	auto gold = make_shared<Gold> (begin - baseBegin , i,"small", 'G', 2, true);
+				   	golds.emplace_back(gold);				   
+				} 
+				else if(s.at(i) == '8') {
+					line.emplace_back('G');					
+				   	auto gold = make_shared<Gold> (begin - baseBegin, i, "merchant hoard", 'G', 4, true);
+				   	golds.emplace_back(gold);		
+				}
+			   else if (s.at(i) == '9') {
+				   /*vector<int> pos;
+				   pos.emplace_back(start-25*(curFloor-1));
+				   pos.emplace_back(i);
+				   dGoldPos.emplace_back(pos);*/
+			   	   //auto gold = make_shared<Gold> (begin - baseBegin + 25, i,"dragon hoard", 'G', 6, false);
+			   	   x = begin - baseBegin ;
+			   	 	y = i;
+				   line.emplace_back('G');
+				} 
+			  else  if (s.at(i) == '@') { 
+				  /*for (int j = 0; j < 5; ++j) {
+					  bool within = theChamber[j]->withinRange(start-25*(curFloor-1), i);
+					  if (within) {
+						  thePlayer->setChamberId(j+1);
+				  }
+			}*/
+				   player->set_x(begin - baseBegin );
+				   player->set_y(i);
+				   line.emplace_back('@');
+			} 
+			   else if (s.at(i) == 'V') {
+				   auto enemy = make_shared<Vampire>(begin - baseBegin, i);
+				   enemies.emplace_back(enemy);
+				   line.emplace_back('V');
+            } 
+			   else if (s.at(i) == 'W') {
+				   auto enemy = make_shared<Werewolf> (begin - baseBegin, i);
+				   enemies.emplace_back(enemy);
+				   line.emplace_back('W');
+	        } 
+			   else if (s.at(i)== 'N') {
+				   auto enemy = make_shared<Goblin> (begin - baseBegin, i);
+				   enemies.emplace_back(enemy);
+				   line.emplace_back('N');
+		    } 
+			   else if (s.at(i)== 'M') {
+				   auto enemy = make_shared<Merchant> (begin - baseBegin, i);
+				   enemies.emplace_back(enemy);
+				   line.emplace_back('M');
+		    } 
+			   else if (s.at(i)== 'T') {
+				   auto enemy = make_shared<Troll> (begin - baseBegin, i);
+				   enemies.emplace_back(enemy);
+				   line.emplace_back('T');
+		    } 
+			   else if (s.at(i) == 'X') {
+				   auto enemy = make_shared<Phoenix>(begin - baseBegin, i);
+				   enemies.emplace_back(enemy);
+				   line.emplace_back('X');
+		    }
+			   else if (s.at(i)== 'D') {
+                  auto gold = make_shared<Gold> (x, y,"dragon hoard", 'G', 6, false);
+                  golds.emplace_back(gold);
+			   	  auto enemy = make_shared<Dragon>(begin - baseBegin, i, gold);
+			   	  enemies.emplace_back(enemy);
+				   /*vector<int> pos;
+				   pos.emplace_back(start-25*(curFloor-1));
+                                   pos.emplace_back(i);					 
+				   dragonPos.emplace_back(pos);*/
+			   	   
+				  line.emplace_back('D');
+			}
+			   else {
+				   line.emplace_back(s.at(i));
+			   }
+		   }
+		 display.erase(display.begin());
+		 display.emplace_back(line);
+         }
+}
 
