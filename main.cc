@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
         }
 
         auto newfloor = make_shared<Floor>(1);
-
+        newfloor->genChamber();
         //newfloor->printFloor();
         char race;
         cin >> race;
@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
                 cin >> race;
             }
         }
-        newfloor->genChamber();
+        
         if(argc == 1) {
             newfloor->genPlayer();
             newfloor->genStair();
@@ -75,30 +75,31 @@ int main(int argc, char* argv[]) {
             newfloor->genGold();
             newfloor->genEnemy();
         }
-        if (argc ==2)
+        if (argc ==2){
             newfloor->readFloor(filename);
-            newfloor->printFloor();
+        }
+        newfloor->printFloor();
 
-        cout << "Here are the commands you use:" << endl;
+        cout <<"\033[1m\033[36m"<< "Here are the commands you use:" << endl;
         cout << "DIR: no, so, ea, we, ne, se, sw, nw" << endl;
         cout << "USE POTION: u <direction>" << endl;
         cout << "ATTACK ENEMY: a <direction>" << endl;
         cout << "RESET GAME: r" << endl;
-        cout << "QUIT: q" << endl;
+        cout << "QUIT: q" << endl << "\033[0m";
         string c;
         while (cin >> c) {
             if (c == "no" ||c == "so" ||c == "ea"
                 ||c ==  "we" ||c == "ne" ||c == "se" ||c == "sw" ||c == "nw") {
                 if (check(newfloor,c, '\\')) {
-                    cout<<"i got to here" << endl;
                     if(newfloor->getLevel() == 5) {
                         newfloor->sethasWon(true);
-                        cout << "You've won!! Your final score is: ";
+                        
                         ifstream intro{"win.txt"};
                         string line;
                         while(getline(intro, line)){
                             cout << line << endl;
                         }
+                        cout << "You've won!! Your final score is: ";
                         if(race == 'h') { // add getGold function
                             cout << (newfloor->getGold()*1.5) << endl;
                         }
@@ -121,17 +122,13 @@ int main(int argc, char* argv[]) {
                         newfloor->readfile("default.txt");
                         newfloor->genChamber();
                         if (argc == 2){
-                        newfloor->readFloor(filename);
-                        newfloor->newLevel();
-                        }
-                        if(argc == 1)
-                        {
-                            newfloor->readfile("default.txt");
+                            newfloor->readFloor(filename);
+                            newfloor->newLevel();
+                        } else if(argc == 1){
                             //auto newfloor = make_shared<Floor>(newfloor->getLevel() + 1);                            
                             newfloor->genPlayer();
-                             newfloor->newLevel();
+                            newfloor->newLevel();
                             newfloor->genStair();
-
                             newfloor->genPotion();
                             newfloor->genGold();
                             newfloor->genEnemy();
@@ -143,15 +140,28 @@ int main(int argc, char* argv[]) {
                 else if (newfloor->movePlayer(c)) {
                     //cout << "moved player" << endl;
                     newfloor->moveEnemy();
+                    newfloor->printFloor();
                     if (newfloor->hasLost()){
-                        ifstream intro{"lose.txt"};
+                        ifstream intro{"dead.txt"};
                         string line;
                         while(getline(intro, line)){
                             cout << line << endl;
                         }
+                        cout << "You've lost!! Your final score is: ";
+                        if(race == 'h') { // add getGold function
+                            cout << (newfloor->getGold()*1.5) << endl;
+                        }
+                        else if(race == 'd') {
+                            cout << newfloor->getGold() << endl;
+                        }
+                        else if(race == 'o') {
+                            cout << newfloor->getGold() << endl;
+                        }
+                        else if(race == 'e') {
+                            cout <<newfloor->getGold() << endl;
+                        }
                         break;
-                    }  
-                    newfloor->printFloor();
+                    }
                 } else {
                     cout << "Invalid command" <<endl;
                 }
@@ -164,8 +174,28 @@ int main(int argc, char* argv[]) {
                     check(newfloor,c, 'T')) {
                     newfloor->pAttack(c);  // class floor's pAttack
                     newfloor->moveEnemy();
-                    if(newfloor->hasLost()) break;
                     newfloor->printFloor();
+                    if (newfloor->hasLost()){
+                        ifstream intro{"dead.txt"};
+                        string line;
+                        while(getline(intro, line)){
+                            cout << line << endl;
+                        }
+                        cout << "You've lost!! Your final score is: ";
+                        if(race == 'h') { // add getGold function
+                            cout << (newfloor->getGold()*1.5) << endl;
+                        }
+                        else if(race == 'd') {
+                            cout << newfloor->getGold() << endl;
+                        }
+                        else if(race == 'o') {
+                            cout << newfloor->getGold() << endl;
+                        }
+                        else if(race == 'e') {
+                            cout <<newfloor->getGold() << endl;
+                        }
+                        break;
+                    }
                 } else {
                     cout << "No enemies in the area" << endl;
                 }
