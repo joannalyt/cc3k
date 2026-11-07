@@ -1,8 +1,12 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 #include "character.h"
+#include "gold.h"
 #include <string>
 #include <memory>
+
+
+class Player;
 
 class Enemy: public Character{
 	int gold;
@@ -18,7 +22,8 @@ public:
 	bool getCompass();
 	void setCompass(bool compass);
 
-	void attack(shared_ptr<Player> pc);
+	void attack(std::shared_ptr<Player> pc);
+	void move(std::string dir);
 };
 
 class Vampire: public Enemy{
@@ -41,7 +46,7 @@ public:
 
 class Goblin: public Enemy{
 public:
-	Goblin(int x, int y): Enemy{70,5,10,70,x,y,"Goblin",'G',0,true,false}{}
+	Goblin(int x, int y): Enemy{70,5,10,70,x,y,"Goblin",'N',0,true,false}{}
 	~Goblin(){}
 };
 
@@ -64,7 +69,7 @@ public:
 
 class Phoenix: public Enemy{
 public:
-	Phoenix(int x, int y): Enemy{50,35,20,50,x,y,"Phoenix",'P',0,true,false}{}
+	Phoenix(int x, int y): Enemy{50,35,20,50,x,y,"Phoenix",'X',0,true,false}{}
 	~Phoenix(){}
 };
 

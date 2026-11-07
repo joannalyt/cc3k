@@ -1,0 +1,172 @@
+#include <iostream>
+#include <sstream>
+#include <memory>
+#include <vector>
+#include <cmath> //cmath or math? 
+#include <string>
+#include "player.h"
+#include "item.h"
+#include "gold.h" //??
+#include "enemy.h"//??
+
+using namespace std;
+
+Player::Player(int hp, int atk, int def,int maxHP, int x, int y, string race, int id):
+Character {hp, atk ,def,maxHP, x, y, race, '@'},gold{0},id{id},baseAtk{atk},baseDef{def}{
+    action = "Player character has spawned.";
+}
+
+int Player::getId(){
+    return id;
+}
+
+void Player::setId(const int i)
+{
+    this->id = i;
+}
+
+std::string Player::getAction()
+{
+    return action;
+}
+
+int Player::getBaseAtk()
+{
+    return baseAtk;
+}
+
+int Player::getBaseDef()
+{
+    return baseDef;
+}
+
+
+int Player::getGold(){
+    return gold;
+}
+
+//setGold and update Action
+void Player::setGold(shared_ptr<Gold> g)
+{
+    if(g->isPickable()){
+    gold += g->getGold();
+    }
+    ostringstream gold_str;
+    gold_str << g->getGold();
+
+    //action = "you get: " + gold_str.str() + " .";
+   if(g->get_Itemtype() == "normal"){
+        action = "PC gets a normal gold. Value:1";
+    }
+    else if(g->get_Itemtype()=="small"){
+        action = "PC gets a small gold. Value:2";
+    }
+    else if(g->get_Itemtype()=="merchant hoard"){
+        action = "PC gets a merchant hoard. Value:4";
+    }
+    else if(g->get_Itemtype()=="dragon hoard"){
+        action = "PC gets a dragon hoard. Value:6";
+    } 
+
+}
+
+void Player::setAction(const string s)
+{
+    this->action = s;
+}
+
+
+
+//ceiling((100/(100+Def (Defender)))∗Atk(Attacker)),
+void Player::damage(shared_ptr<Enemy> e, vector<shared_ptr<Enemy>> enemies) {
+    int combat = (int) ceil ((100.0 / (100+get_Def()))*e->get_Atk());
+
+    ostringstream combat_str;
+    combat_str << combat;
+    int newdamage = e->get_HP() - combat;
+    ostringstream hp_str;
+    
+    if(newdamage > 0)
+    {
+    e->set_HP(newdamage);
+    hp_str << newdamage; 
+    action = "PC attacked " + e->get_race() + ", dealed "+ combat_str.str() + " damage. [enemy hp:" + hp_str.str() + "]";
+    } else { // the enemy is killled
+       e->set_HP(0);
+       action = "Dealed "+ combat_str.str() + " damage. " + e->get_race()+ " is killed. ";
+       if(e->get_race()!="Merchant" && e->get_race()!="Dragon")
+       gold+=1;
+       //gold += e->getGold(); ????
+    if (e->get_race() == "Dragon") {
+      e->setDragonHoard();
+     } 
+    }
+     if (e->get_race() == "Merchant") {
+      for (unsigned int i = 0; i < enemies.size(); i++) {
+        if(enemies[i]->get_notation() == 'M')
+        enemies[i]->setHostile(true);
+         }
+    }
+}
+
+//changes the direction of the PC 
+void Player::move(string dir)
+{
+    if(dir == "no"){
+        set_x(get_x()-1);
+        action = "PC moves North.";
+    }
+    else if(dir == "so"){
+        set_x(get_x()+1);
+        action = "PC moves South.";
+    }
+    else if(dir == "we"){
+        set_y(get_y()-1);
+        action = "PC moves West.";
+    }
+    else if(dir == "ea"){
+        set_y(get_y()+1);
+        action = "PC moves East.";
+    }    
+    else if(dir == "ne"){
+        set_x(get_x()-1);
+        set_y(get_y()+1);
+        action = "PC moves NorthEast.";
+    }
+    else if(dir == "se"){
+        set_x(get_x()+1);
+        set_y(get_y()+1);
+        action = "PC moves SouthEast.";
+    }
+    else if(dir == "sw"){
+        set_x(get_x()+1);
+        set_y(get_y()-1);
+        action = "PC moves SouthWest.";
+    }
+    else if(dir == "nw"){
+        set_x(get_x()-1);
+        set_y(get_y()-1);
+        action = "PC moves NorthWest.";    
+    }
+}     
+
+/*void Player::usePotion(shared_ptr<Potion> p)
+{
+    p->getPotion();
+
+}*/
+Player :: ~Player(){}
+
+
+
+//initializes the PC 
+Human :: Human(int x,int y,int id):Player{140,20,20,140,x,y,"Human",id} {}
+
+Dwarf :: Dwarf(int x,int y,int id):Player{100,20,30,100,x,y,"Dwarf",id} {}
+
+Elf :: Elf(int x,int y,int id):Player{140,30,10,140,x,y,"Elf",id}{}
+
+Orc :: Orc(int x,int y,int id):Player{180,30,25,180,x,y,"Orc",id}{}
+
+
+
