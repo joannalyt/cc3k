@@ -39,6 +39,9 @@ void Enemy::attack(shared_ptr<Player> pc){ //this enemy attacks player pc
 		int random = rand()%2;
 		if(random){
 			int damage = ceil((100.0/(100+pc->get_Def()))*get_Atk());
+			if(pc->getBarrier()){
+				damage = ceil(damage/2);
+			}
 			int curHP = pc->get_HP();
 			if(curHP - damage > 0){
 				pc->set_HP(curHP-damage);
@@ -76,6 +79,18 @@ void Enemy::move(string dir){
 		set_x(get_x()-1);
         set_y(get_y()-1);
 	}
+}
+
+shared_ptr<Gold> Enemy::getDragonHoard(){}
+
+void Enemy::setDragonHoard(bool pickable){}
+
+shared_ptr<Gold> Dragon::getDragonHoard(){
+	return dragonHoard;
+}
+
+void Dragon::setDragonHoard(bool pickable){
+	dragonHoard->setIspickable(pickable);
 }
 
 

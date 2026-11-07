@@ -24,6 +24,9 @@ public:
 
 	void attack(std::shared_ptr<Player> pc);
 	void move(std::string dir);
+
+	virtual std::shared_ptr<Gold> getDragonHoard();
+	virtual void setDragonHoard(bool pickable);
 };
 
 class Vampire: public Enemy{
@@ -62,9 +65,8 @@ public:
 	Dragon(int x, int y, std::shared_ptr<Gold> dragonHoard)
 	: Enemy{150,20,20,150,x,y,"Dragon",'D',0,false,false}, dragonHoard{dragonHoard}{}
 	~Dragon(){}
-	std::shared_ptr<Gold> getDragonHoard(){
-		return dragonHoard;
-	}
+	std::shared_ptr<Gold> getDragonHoard() override;
+	void setDragonHoard(bool pickable) override;
 };
 
 class Phoenix: public Enemy{

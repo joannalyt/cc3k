@@ -12,11 +12,13 @@
 #include <utility>
 #include <cstdlib>
 #include <vector>
+#include <ctime>
 
 using namespace std;
 
 Floor ::~Floor(){reset();}
 Floor::Floor(int level, string file): level{level},player{nullptr} {
+	srand(time(NULL));
 	ifstream ifs{file};
 	string s;
 	while (getline(ifs, s))	{
@@ -27,29 +29,44 @@ Floor::Floor(int level, string file): level{level},player{nullptr} {
     display.emplace_back(line);
 	}
 	origSymbol = '.';
+
+	barrierLevel = rand()%5+1;
 }
 
 void Floor:: printFloor(){  
 	for(unsigned int i= 0; i < display.size(); i++){
-		for ( unsigned int j = 0; j < display[i].size(); j++){
-			cout << display[i][j];
+		for ( unsigned int j = 0; j < display.at(i).size(); j++){
+			char c = (display.at(i)).at(j);
+			if(c == 'W'||c == 'V'||c == 'N'||c =='D'||c == 'X'||c =='T'||c == 'M'){
+				cout<<"\033[1m\033[31m"<<c<<"\033[0m";
+			} else if(c == 'P'){
+				cout<<"\033[1m\033[32m"<<c<<"\033[0m";
+			} else if(c == 'G'){
+				cout<<"\033[1m\033[33m"<<c<<"\033[0m";
+			} else if(c == '@'){
+				cout<<"\033[1m\033[34m"<<c<<"\033[0m";
+			} else if(c == 'B'){
+				cout<<"\033[1m\033[35m"<<c<<"\033[0m";
+			} else {
+				cout << "\033[1m\033[36m"<< c << "\033[0m";
+			}
 		}
 		cout << endl;	
 	}
-	cout << "Race: " << player->get_race() << " Gold: " << player->getGold();
-    cout << "                                         Floor:" << level<<endl;
+	cout <<"\033[1m\033[36m"<<"Race: "<< player->get_race() << " Gold: " << player->getGold();
+    cout << "                                                      Floor:" << level<<endl;
     cout << "HP: " << player->get_HP() << endl;
     cout << "Atk: " << player->get_Atk() << endl;
     cout << "Def: " << player->get_Def() << endl;
-    cout << "Action: " << player->getAction() << endl; 
+    cout << "Action: " << player->getAction() << endl<<"\033[0m"; 
 }
 
 
 void Floor::genGold() {
+	srand(time(NULL));
   int chamberid;
   int goldtype;
   for (int i = 0; i < 10; i++) { //generate 10 gold
-
     chamberid = rand() % 5; //
     vector<int> pos = chambers[chamberid]->findRandom();
     display[pos[0]][pos[1]] = 'G';
@@ -65,12 +82,19 @@ void Floor::genGold() {
        golds.emplace_back(g);
     }
   }
+  if(level == barrierLevel){
+  	chamberid = rand() % 5; //
+    vector<int> pos = chambers[chamberid]->findRandom();
+    display[pos[0]][pos[1]] = 'B';
+  	auto g = make_shared<Gold> (pos[0], pos[1], "barrier suit", 'B', 0, false);
+  	golds.emplace_back(g);
+  }
 }
 
    
- void Floor::genPlayer(shared_ptr<Player> pp){
- 	player = pp;
- 	int chamberid = rand() % 5; //
+ void Floor::genPlayer(){
+ 	srand(time(NULL));
+  	int chamberid = rand() % 5; //
     player->setId(chamberid);
     vector<int> pos = chambers[chamberid]->findRandom();
     display[pos[0]][pos[1]] = '@';
@@ -79,18 +103,22 @@ void Floor::genGold() {
    
  }
 
+ void Floor::setPlayer (shared_ptr<Player> pp){
+ 	player = pp;
+ }
+
  void Floor::genStair(){
+ 	srand(time(NULL));
  	int chamberid = rand() % 5;
-     while(chamberid == player->getId())
-    { 
+    while(chamberid == player->getId()){ 
         chamberid = rand() % 5;
     }
     vector<int> pos = chambers[chamberid]->findRandom();
     display[pos[0]][pos[1]] = '\\';
-    
  }
 
  void Floor::genPotion(){
+ 	srand(time(NULL));
  	int chamberid;
 	for (int i = 0; i < 10; i++) {
     chamberid = rand() % 5; //generate a random num from 0-4
@@ -134,10 +162,11 @@ void Floor::genChamber(){
 }
 
 void Floor::genEnemy(){
+	srand(time(NULL));
 	int count_dragon;
 	count_dragon = 0;
-	for(int i = 0; i < 10; i++){
-		if(golds[i]->getGold() == 6){//dragon hoard
+	for(unsigned int i = 0; i < golds.size(); i++){
+		if(golds[i]->getGold() == 6||golds[i]->getGold() == 0){//dragon hoard or barrier suit
 			golds[i]->setIspickable(0);
 			count_dragon++;
 			while(true){
@@ -286,6 +315,24 @@ bool Floor::movePlayer(string dir){
 			if((golds[i]->get_x() == checkTile(dir)[0]) && (golds[i]->get_y() == checkTile(dir)[1])){
 				if(golds[i]->isPickable()){
 					player->setGold(golds[i]);
+					string goldaction = player->getAction();
+					golds.erase(golds.begin()+i);
+					nextTile = '.';
+					player->move(dir);
+					player->setAction(player->getAction() +goldaction);
+					display[x1][y1]=origSymbol;
+					int x2 = player->get_x();
+					int y2 = player->get_y();
+					display[x2][y2]='@';
+					origSymbol=nextTile;
+					return true;
+				}
+			}
+		}
+	} else if(nextTile == 'B'){
+		for(unsigned int i = 0; i < golds.size(); i++){
+			if((golds[i]->get_x() == checkTile(dir)[0]) && (golds[i]->get_y() == checkTile(dir)[1])){
+				if(golds[i]->isPickable()){
 					golds.erase(golds.begin()+i);
 					nextTile = '.';
 					player->move(dir);
@@ -294,6 +341,7 @@ bool Floor::movePlayer(string dir){
 					int y2 = player->get_y();
 					display[x2][y2]='@';
 					origSymbol=nextTile;
+					player->setBarrier(true);
 					return true;
 				}
 			}
@@ -316,6 +364,7 @@ bool Floor::withinBlock(int ex, int ey){ //checks if <ex,ey> is neighbour of pla
 }
 
 void Floor::moveToNeighbour(shared_ptr<Enemy> pe){
+	srand(time(NULL));
 	int x1 = pe->get_x();
 	int y1 = pe->get_y();
 	while(true){
@@ -384,39 +433,43 @@ void Floor::moveToNeighbour(shared_ptr<Enemy> pe){
 
 void Floor::moveEnemy(){
 	for(unsigned int i = 0; i < enemies.size(); i++){
+		if(enemies[i]->get_notation() == 'D'){
+			shared_ptr<Gold> hoardorBarrier = enemies[i]->getDragonHoard();
+			if(withinBlock(hoardorBarrier->get_x(), hoardorBarrier->get_y())){
+				enemies[i]->setHostile(true);
+			} else{
+				enemies[i]->setHostile(false);
+			}
+		}
 		if(!withinBlock(enemies[i]->get_x(), enemies[i]->get_y())){
 			if(enemies[i]->get_notation() != 'D'){
 				moveToNeighbour(enemies[i]);
 			}
-		} else{ //attack if hostile
+		} 
+		if(withinBlock(enemies[i]->get_x(), enemies[i]->get_y())){ //attack if hostile
 			if(enemies[i]->getHostile()){
 				enemies[i]->attack(player);
 			}
-
 		}
 	}
 }
 
-/*void Floor::moveEnemy(){
-	int x1 = player->get_x();
-	int y1 = player->get_y();
-	cout << enemies.size() << endl;
-	for(unsigned int i = 0; i < display.size()-1; i++){
-		for(unsigned int j = 0; j < display[i].size()-1; j++){
-			for(unsigned int e = 0; e < enemies.size(); e++){
-				if(enemies[e]->get_x() == i && enemies[e]->get_y() == j){//this position has an enemy
-					cout << enemies[e]->get_notation() << endl;
-					if(!withinBlock(x1, y1)){
-						//moveToNeighbour(enemies[e]);
-					} else{//within 1 block of player, does not move and attack
-						//enemies[e]->attack(player);
-					}
-				}
+bool Floor::usePotion(string dir){
+	int x1 = checkTile(dir)[0];
+	int y1 = checkTile(dir)[1];
+	char nextTile = display[x1][y1];
+	if(nextTile == 'P'){
+		for(unsigned int i = 0; i < potions.size(); i++){
+			if(potions[i]->get_x() == x1 && potions[i]->get_y() == y1){
+				player->applyPotion(potions[i]);
+				display[x1][y1] = '.';
+				potions.erase(potions.begin()+i);
+				return true;
 			}
 		}
-	}
-}*/
-
+	} 
+	return false;
+}
 
 int Floor::getLevel(){
 	return level;
@@ -447,30 +500,35 @@ bool Floor::checkDisplay (int x, int y,char c)
 }
 
 
-void Floor:: generateandprint() {
-	genStair();
-    genPotion();
-    genGold();
-    genEnemy();
-    printFloor();
+void Floor::readfile(string file) {
+    ifstream ifs{file};
+	string s;
+	while (getline(ifs, s))	{
+    vector <char> line;
+    for( unsigned int i = 0; i< s.length(); i++){
+    	line.emplace_back(s.at(i));
+    }
+    display.emplace_back(line);
+	}
+	origSymbol = '.';
 }
 
 void Floor::reset() {
-   //player.clear();
- for (unsigned int i = 0; i < display.size(); i++) {
-  	display[i].clear();
- }   
-   golds.clear();
-   potions.clear();
-   enemies.clear();
-   chambers.clear();
+	   //player.clear();
+	for (unsigned int i = 0; i < display.size(); i++) {
+		display[i].clear();
+	 }
+	display.clear();
+	enemies.clear();
+	chambers.clear();
+	potions.clear();
+	golds.clear();
 }
 
 
 int Floor::enemyIndex(int x, int y ) {
-	for (unsigned int id = 0; id <enemies.size(); id++)
-	{
-     if( enemies[id]->get_x() == x && enemies[id]->get_y())
+	for (unsigned int id = 0; id <enemies.size(); id++){
+     if( enemies[id]->get_x() == x && enemies[id]->get_y() == y)
      	return id;
 	}
 	return 0;
@@ -481,10 +539,19 @@ void Floor::pAttack(string dir) {
     vector<int> pos = checkTile(dir);
     int enemyindex  = enemyIndex(pos[0], pos[1]);
     player->damage(enemies[enemyindex], enemies);
-    if (enemies[enemyindex]->get_HP() <= 0) {
-                display[enemies[enemyindex]->get_x()][enemies[enemyindex]->get_y()] = '.';
-                enemies.erase(enemies.begin()+enemyindex); 
-  }
+    if (enemies[enemyindex]->get_HP() <= 0) { 
+    	if(enemies[enemyindex]->get_notation() == 'M'){ //merchant dies, spawn merchant hoard
+    		int x = enemies[enemyindex]->get_x();
+    		int y = enemies[enemyindex]->get_y();
+    		enemies.erase(enemies.begin()+enemyindex);
+    		auto g = make_shared<Gold> (x, y, "merchant hoard", 'G', 4, true);
+    		golds.emplace_back(g);
+    		display[x][y] = 'G';
+    	} else{
+    		display[enemies[enemyindex]->get_x()][enemies[enemyindex]->get_y()] = '.';
+        	enemies.erase(enemies.begin()+enemyindex); 
+    	}
+  	}
 }
 
 
@@ -494,5 +561,130 @@ void Floor::newLevel(){
 }
 
 
-
+void Floor::readFloor(string file) {
+	ifstream ifs{file};
+	string s;
+	int x = 0, y=0;
+	char temp;
+	int baseBegin = 25 * (level-1);
+    if(level != 1){
+    	for(int i = 0; i < (level-1)*25; i++){
+    		getline(ifs,s);
+    	}
+    }
+	for (int begin = baseBegin; begin < baseBegin + 25; ++begin) {
+		getline(ifs, s);
+	  	vector <char> line;
+	    for (unsigned int i = 0; i < s.length(); ++i) {
+			if (s.at(i) == '0') {
+				line.emplace_back('P');
+				auto potion = make_shared<Potion> (begin- baseBegin, i, "RH", 'P', 10);
+				potions.emplace_back(potion);
+			} else if (s.at(i) == '1') {
+			   	line.emplace_back('P');
+				auto potion = make_shared<Potion> (begin - baseBegin, i,"BA", 'P', 5);
+				potions.emplace_back(potion);				   
+	        } else if (s.at(i) == '2') {
+			   line.emplace_back('P');
+				auto potion = make_shared<Potion> (begin - baseBegin, i,"BD", 'P', 5);
+				potions.emplace_back(potion);       
+			} else if (s.at(i)== '3') {  				                              
+			   	line.emplace_back('P');
+				auto potion = make_shared<Potion> (begin - baseBegin, i,"PH", 'P', -10);
+				potions.emplace_back(potion);
+			} else if (s.at(i)== '4') {
+				line.emplace_back('P');
+				auto potion = make_shared<Potion> (begin - baseBegin, i,"WA", 'P', -5);
+				potions.emplace_back(potion);
+			} else if (s.at(i) == '5') {
+			   	line.emplace_back('P');
+				auto potion = make_shared<Potion> (begin - baseBegin, i,"WD", 'P', -5);
+				potions.emplace_back(potion);				   	            
+			} else if (s.at(i) == '6') {
+			   	line.emplace_back('G');
+				auto gold = make_shared<Gold> (begin - baseBegin, i, "normal", 'G', 1, true);
+				golds.emplace_back(gold);
+            } else if (s.at(i) == '7') {
+				line.emplace_back('G');
+				auto gold = make_shared<Gold> (begin - baseBegin , i,"small", 'G', 2, true);
+				golds.emplace_back(gold);				   
+			} else if(s.at(i) == '8') {
+				line.emplace_back('G');					
+				auto gold = make_shared<Gold> (begin - baseBegin, i, "merchant hoard", 'G', 4, true);
+				golds.emplace_back(gold);		
+			} else if (s.at(i) == '9') {
+				   /*vector<int> pos;
+				   pos.emplace_back(start-25*(curFloor-1));
+				   pos.emplace_back(i);
+				   dGoldPos.emplace_back(pos);*/
+			   	   //auto gold = make_shared<Gold> (begin - baseBegin + 25, i,"dragon hoard", 'G', 6, false);
+				x = begin - baseBegin ;
+				y = i;
+				temp = s.at(i);
+				line.emplace_back('G');
+			} else if (s.at(i) == 'B'){
+				x = begin - baseBegin ;
+				y = i;
+				temp = s.at(i);
+				line.emplace_back('B');
+			} else  if (s.at(i) == '@') { 
+				  /*for (int j = 0; j < 5; ++j) {
+					  bool within = theChamber[j]->withinRange(start-25*(curFloor-1), i);
+					  if (within) {
+						  thePlayer->setChamberId(j+1);
+				  }
+			}*/
+				player->set_x(begin - baseBegin );
+				player->set_y(i);
+				line.emplace_back('@');
+			} else if (s.at(i) == 'V') {
+				auto enemy = make_shared<Vampire>(begin - baseBegin, i);
+				enemies.emplace_back(enemy);
+				line.emplace_back('V');
+            } else if (s.at(i) == 'W') {
+				auto enemy = make_shared<Werewolf> (begin - baseBegin, i);
+				enemies.emplace_back(enemy);
+				line.emplace_back('W');
+	        } else if (s.at(i)== 'N') {
+				auto enemy = make_shared<Goblin> (begin - baseBegin, i);
+				enemies.emplace_back(enemy);
+				line.emplace_back('N');
+		    } else if (s.at(i)== 'M') {
+				auto enemy = make_shared<Merchant> (begin - baseBegin, i);
+				enemies.emplace_back(enemy);
+				line.emplace_back('M');
+		    } else if (s.at(i)== 'T') {
+				auto enemy = make_shared<Troll> (begin - baseBegin, i);
+				enemies.emplace_back(enemy);
+				line.emplace_back('T');
+		    } else if (s.at(i) == 'X') {
+				auto enemy = make_shared<Phoenix>(begin - baseBegin, i);
+				enemies.emplace_back(enemy);
+				line.emplace_back('X');
+		    } else if (s.at(i)== 'D') {
+		    	if(temp == '9'){
+		    		auto gold = make_shared<Gold> (x, y,"dragon hoard", 'G', 6, false);
+		    		golds.emplace_back(gold);
+		    		auto enemy = make_shared<Dragon>(begin - baseBegin, i, gold);
+		    		enemies.emplace_back(enemy);
+		    	} else if(temp == 'B'){
+		    		auto gold = make_shared<Gold> (x, y,"barrier suit", 'B', 0, false);
+		    		golds.emplace_back(gold);
+		    		auto enemy = make_shared<Dragon>(begin - baseBegin, i, gold);
+					enemies.emplace_back(enemy);
+		    	}
+				   /*vector<int> pos;
+				   pos.emplace_back(start-25*(curFloor-1));
+                                   pos.emplace_back(i);					 
+				   dragonPos.emplace_back(pos);*/
+			   	   
+				line.emplace_back('D');
+			} else {
+				line.emplace_back(s.at(i));
+			}
+		}
+		display.erase(display.begin());
+		display.emplace_back(line);
+	}
+}
 

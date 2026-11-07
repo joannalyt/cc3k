@@ -15,6 +15,7 @@ class Player: public Character
     int id; 
     int baseAtk,baseDef;
     std::string action;
+    bool hasBarrier;
   public:
     Player(int hp, int atk, int def,int maxHP, int x, int y, std::string race, int id);
 
@@ -36,7 +37,10 @@ class Player: public Character
 
     void move(std::string dir);      
 
-    //void usePotion(std::shared_ptr<Potion> p);
+    void applyPotion(std::shared_ptr<Potion> pp);
+
+    bool getBarrier();
+    void setBarrier(bool b);
 
 
     virtual ~Player();
@@ -44,8 +48,7 @@ class Player: public Character
 };
 
 
-class Human : public Player
-{
+class Human : public Player{  
     public:
         Human(int x=-1, int y=-1, int id=-1);
 };
