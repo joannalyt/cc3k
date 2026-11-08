@@ -89,7 +89,7 @@ void Player::setAction(const string s)
 
 
 void Player::damage(shared_ptr<Enemy> e, vector<shared_ptr<Enemy>> enemies) {
-    int combat = (int) ceil ((100.0 / (100+get_Def()))*e->get_Atk());
+    int combat = (int) ceil ((100.0 / (100+e->get_Def()))*get_Atk());
 
     ostringstream combat_str;
     combat_str << combat;
