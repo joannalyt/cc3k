@@ -81,7 +81,9 @@ void Enemy::move(string dir){
 	}
 }
 
-shared_ptr<Gold> Enemy::getDragonHoard(){}
+shared_ptr<Gold> Enemy::getDragonHoard(){
+	return nullptr;
+}
 
 void Enemy::setDragonHoard(bool pickable){}
 
